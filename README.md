@@ -7,7 +7,7 @@ activities to
 - run Ocarina testsuites,
 - and eventually collect coverage metrics
 
-'''
+```
 Usage: ./build_ocarina-suite.sh [switches]
  -u : update source directory
  -s : reset source directory (needs -u)
@@ -17,16 +17,16 @@ Usage: ./build_ocarina-suite.sh [switches]
  -c : build Ocarina with coverage on
  -g : build Ocarina with debug on
  -t : run tests
-'''
+```
 
 * The following install a freh copy of Ocarina:
 
-'''
+```
 ./build_ocarina-suite.sh -s -u
-'''
+```
 
 * To compile and install Ocarina:
 
-'''
+```
 ./build_ocarina-suite.sh -b
-'''
+```
