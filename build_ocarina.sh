@@ -23,6 +23,8 @@ do_packaging="yes" # "yes" to do the packaging, any other value otherwise
 upload_src="no"  # "yes" to upload, any other value otherwise
 upload_bin="no"  # "yes" to upload, any other value otherwise
 upload_xpl="no"  # "yes" to upload, any other value otherwise
+src_suffix=".tar.gz"
+bin_suffix=".tgz"
 
 ##################################
 # Ocarina build-time configuration
@@ -46,6 +48,7 @@ debug_default="no"                      # "yes" to print debugging traces
 update_ocarina_default="no"             # "yes" to update the source directory
 build_ocarina_from_scratch_default="no" # "yes" to reload source directory
 build_ocarina_default="no"              # "yes" to build Ocarina
+package_ocarina_default="no"            # "yes" to package Ocarina
 test_ocarina_default="no"               # "yes" to run make check
 
 ###############################################################################
@@ -211,10 +214,14 @@ do_test_ocarina() {
 # Packaging Ocarina
 
 do_packaging() {
-    if test x"${do_packaging}" != x"yes"; then
-        exit 0
-    fi
     cd ${root_script_dir}/ocarina
+
+    # Bootstrap the build
+    try "./support/reconfig" "Reconfiguring (Ocarina)"
+
+    # Configuring
+    try "./configure ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
+        "First configure (Ocarina)"
 
     # Clean up old archives and build tree
     old_archive="`ls ocarina-*${src_suffix} 2> /dev/null`"
@@ -231,6 +238,15 @@ do_packaging() {
 
     try "${GNU_MAKE} distcheck DISTCHECK_CONFIGURE_FLAGS='--disable-debug'" \
         "${GNU_MAKE} distcheck (Ocarina)"
+
+    archive="`ls ocarina-*${src_suffix}`"
+    echo "  => Archive ${archive} built in directory `pwd`"
+
+    # Source snapshot
+
+    new_archive="`basename ${archive} ${src_suffix}`-suite-src-${the_date}${src_suffix}"
+    mv ${archive} ${new_archive}
+    echo "  => Source archive ready: ${new_archive}"
 }
 
 ###############################################################################
@@ -238,7 +254,6 @@ do_packaging() {
 
 do_build_from_tarball() {
     archive="`ls ocarina-*${src_suffix}`"
-    echo "  => Archive ${archive} built in directory `pwd`" >> ${final_report_body} 2>&1
 
     # Extract the archive
     try "tar xzvf ${archive}" "extracting archive (Ocarina)"
@@ -265,11 +280,6 @@ do_build_from_tarball() {
     cd ..
 
     # Packaging is successful, create a snapshot and upload it
-
-    # Source snapshot
-    new_archive="${archive_dir}-suite-src-${the_date}${src_suffix}"
-    mv ${archive} ${new_archive}
-    echo "  => Source archive ready: ${new_archive}" >> ${final_report_body} 2>&1
 
     if test x"${upload_src}" = x"yes"; then
 
@@ -323,6 +333,7 @@ usage() {
     echo " -b : build Ocarina"
     echo " -c : build Ocarina with coverage on (needs -b or -t)"
     echo " -g : build Ocarina with debug on (needs -b)"
+    echo " -p : package Ocarina"
     echo " -t : run tests"
 }
 
@@ -331,13 +342,14 @@ usage() {
 
 # 1) parse command line parameters
 
-while getopts "shudgtbc" OPTION; do
+while getopts "shudgtbcp" OPTION; do
     case "$OPTION" in
         b) build_ocarina="yes" ;;
         c) ocarina_coverage="--enable-gcov" ;;
         d) debug="yes" ;;
         g) ocarina_debug="--enable-debug" ;;
         h) usage ; exit 0 ;;
+        p) package_ocarina="yes" ;;
         s) build_ocarina_from_scratch="yes" ;;
         t) test_ocarina="yes" ;;
         u) update_ocarina="yes" ;;
@@ -351,6 +363,7 @@ done
 : ${update_ocarina=$update_ocarina_default}
 : ${debug=$debug_default}
 : ${build_ocarina=$build_ocarina_default}
+: ${package_ocarina=$package_ocarina_default}
 : ${test_ocarina=$test_ocarina_default}
 
 if test x"${debug}" = x"yes"; then
@@ -358,6 +371,7 @@ if test x"${debug}" = x"yes"; then
     echo update_ocarina : $update_ocarina
     echo debug : $debug
     echo build_ocarina : $build_ocarina
+    echo package_ocarina : $package_ocarina
     echo test_ocarina : $test_ocarina
 
     echo build ocarina with debug:    $ocarina_debug
@@ -376,6 +390,10 @@ fi
 
 if test x"${test_ocarina}" = x"yes"; then
     do_test_ocarina
+fi
+
+if test x"${package_ocarina}" = x"yes"; then
+    do_packaging
 fi
 
 exit 0

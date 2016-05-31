@@ -15,8 +15,10 @@ Usage: ./build_ocarina.sh [switches]
  -h : print usage
  -d : debug traces
 
- -c : build Ocarina with coverage on
- -g : build Ocarina with debug on
+ -b : build Ocarina
+ -c : build Ocarina with coverage on (needs -b or -t)
+ -g : build Ocarina with debug on (needs -b)
+ -p : package Ocarina
  -t : run tests
 ```
 
