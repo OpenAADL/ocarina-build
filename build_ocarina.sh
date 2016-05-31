@@ -1,17 +1,23 @@
 ###############################################################################
-#! /bin/sh -x
+#! /bin/bash
 
 # This script does a checkout of the Ocarina sources and then
 # builds Ocarina, runs regression tests, install and package it.
+
+# Note: it may assumes the shell is actually bash
 
 root_script_dir=`dirname $0`; cd ${root_script_dir}; root_script_dir=`pwd`
 the_date=`date +"%Y%m%d"`
 tmp_dir="$HOME/tmp"; mkdir -p $tmp_dir
 is_error=$tmp_dir/build_ocarina_ERROR; rm -f $is_error
 
-###############################################################################
+######################
+# script configuration
 
-include_runtimes="polyorb-hi-ada polyorb-hi-c"
+LANG=C        # ensure there is no pollution from language-specific locales
+GNU_MAKE=make # default make utility
+
+###############################################################################
 
 do_packaging="yes" # "yes" to do the packaging, any other value otherwise
 upload_src="no"  # "yes" to upload, any other value otherwise
@@ -20,6 +26,8 @@ upload_xpl="no"  # "yes" to upload, any other value otherwise
 
 ##################################
 # Ocarina build-time configuration
+
+include_runtimes="polyorb-hi-ada polyorb-hi-c aadlib" # Ocarina runtimes
 
 # Note: check Ocarina configure script for details
 
