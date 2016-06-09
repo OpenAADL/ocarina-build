@@ -6,23 +6,19 @@
 
 # Note: it may assumes the shell is actually bash
 
+######################
+# script configuration
+
 root_script_dir=`dirname $0`; cd ${root_script_dir}; root_script_dir=`pwd`
 the_date=`date +"%Y%m%d"`
 tmp_dir="$HOME/tmp"; mkdir -p $tmp_dir
 is_error=$tmp_dir/build_ocarina_ERROR; rm -f $is_error
-
-######################
-# script configuration
 
 LANG=C        # ensure there is no pollution from language-specific locales
 GNU_MAKE=make # default make utility
 
 ###############################################################################
 
-do_packaging="yes" # "yes" to do the packaging, any other value otherwise
-upload_src="no"  # "yes" to upload, any other value otherwise
-upload_bin="no"  # "yes" to upload, any other value otherwise
-upload_xpl="no"  # "yes" to upload, any other value otherwise
 src_suffix=".tar.gz"
 bin_suffix=".tgz"
 
@@ -111,11 +107,11 @@ do_archive() {
 
     case "${format}" in
         .tar.gz | .tgz )
-	    tar czvf ${archive_name} ${directory}
+	    tar czf ${archive_name} ${directory}
 	    ;;
 
         .tar.bz2 | .tbz2 )
-	    tar cjvf ${archive_name} ${directory}
+	    tar cjf ${archive_name} ${directory}
 	    ;;
 
         .zip )
@@ -253,12 +249,16 @@ do_packaging() {
 # Build the binary package for the Ocarina suite
 
 do_build_from_tarball() {
+    cd ${root_script_dir}/ocarina
+
     archive="`ls ocarina-*${src_suffix}`"
+    archive_dir=`basename ${archive} ${src_suffix}`
+    rm -r  ${archive_dir}
+    mkdir -p ${archive_dir}
 
     # Extract the archive
-    try "tar xzvf ${archive}" "extracting archive (Ocarina)"
+    try "tar xzvf ${archive} -C ${archive_dir} --strip-components=1" "extracting archive (Ocarina)"
 
-    archive_dir=`basename ${archive} ${src_suffix}`
     cd ${archive_dir}
 
     # Configuring
@@ -279,17 +279,6 @@ do_build_from_tarball() {
     try "${GNU_MAKE} distclean" "DIST: ${GNU_MAKE} distclean (Ocarina)"
     cd ..
 
-    # Packaging is successful, create a snapshot and upload it
-
-    if test x"${upload_src}" = x"yes"; then
-
-    # Remove any previous source archive from the remote directory
-
-        ssh ${remote_user}@${remote_host} rm -f "${local_ocarina_snapshot_dir}/${archive_dir}-suite-src*" >> ${final_report_body} 2>&1
-
-        try "${upload} ${new_archive} ocarina" "DIST: uploading the nightly source snapshot"
-    fi
-
     # Binary snapshots (Runtime and Examples)
     bin_dir="${archive_dir}-suite-${build_platform}-${the_date}"
     bin_archive="${bin_dir}${bin_suffix}"
@@ -303,23 +292,10 @@ do_build_from_tarball() {
     # Create the archive
     do_archive ${bin_archive} ${bin_suffix} ${bin_dir}
 
-    rm -rf ${bin_dir} >> ${final_report_body} 2>&1
+    rm -rf ${bin_dir}
 
     archive="`ls ocarina-*${bin_suffix}`"
-    echo "  => Archive ${archive} built in directory `pwd`" >> ${final_report_body} 2>&1
-}
-
-###############################################################################
-do_upload() {
-    if test x"${upload_bin}" = x"yes"; then
-
-    # Remove any previous binary archive of the same platform from the
-    # remote directory.
-
-        ssh ${remote_user}@${remote_host} rm -f "${local_ocarina_snapshot_dir}/${archive_dir}-suite-${build_platform}*" >> ${final_report_body} 2>&1
-
-        try "${upload} ${bin_archive} ocarina" "DIST: uploading the nightly binary snapshot"
-    fi
+    echo "  => Archive ${archive} built in directory `pwd`"
 }
 
 ###############################################################################
@@ -342,7 +318,7 @@ usage() {
 
 # 1) parse command line parameters
 
-while getopts "shudgtbcp" OPTION; do
+while getopts "bcdghpstu" OPTION; do
     case "$OPTION" in
         b) build_ocarina="yes" ;;
         c) ocarina_coverage="--enable-gcov" ;;
@@ -394,6 +370,10 @@ fi
 
 if test x"${package_ocarina}" = x"yes"; then
     do_packaging
+fi
+
+if test x"${build_from_tarball}" = x"yes"; then
+    do_build_from_tarball
 fi
 
 exit 0
