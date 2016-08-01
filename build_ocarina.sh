@@ -17,6 +17,25 @@ is_error=$tmp_dir/build_ocarina_ERROR; rm -f $is_error
 LANG=C        # ensure there is no pollution from language-specific locales
 GNU_MAKE=make # default make utility
 
+# Target specific flags for configure go there
+case "$(uname -s)" in
+
+    Darwin)
+	;;
+
+    Linux)
+	;;
+
+    CYGWIN*)
+	# For Cygwin, we assume we "cross compile" to 
+	target_specific="--target=x86_64-w64-mingw32"
+	;;
+    MINGW32*|MSYS*)
+	echo "Unsupported build configuration"
+	exit -1
+	;;
+    esac
+
 ###############################################################################
 
 src_suffix=".tar.gz"
@@ -179,7 +198,7 @@ do_build_ocarina() {
     try "./support/reconfig" "Reconfiguring (Ocarina)"
 
     # Configuring
-    try "./configure ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
+    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
         "First configure (Ocarina)"
 
     # Building
@@ -216,7 +235,7 @@ do_packaging() {
     try "./support/reconfig" "Reconfiguring (Ocarina)"
 
     # Configuring
-    try "./configure ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
+    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
         "First configure (Ocarina)"
 
     # Clean up old archives and build tree
@@ -227,7 +246,7 @@ do_packaging() {
 
     # Re configuring (since we've done 'make distclean')
 
-    try "./configure ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
+    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
         "Second configure (Ocarina)"
 
     # Packaging and testing the package
@@ -262,7 +281,7 @@ do_build_from_tarball() {
     cd ${archive_dir}
 
     # Configuring
-    try "./configure --disable-debug --prefix=${ocarina_dist_install}" \
+    try "./configure ${target_specific} --disable-debug --prefix=${ocarina_dist_install}" \
         "DIST: configure (Ocarina)"
 
     # Building
