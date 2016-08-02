@@ -17,29 +17,32 @@ is_error=$tmp_dir/build_ocarina_ERROR; rm -f $is_error
 LANG=C        # ensure there is no pollution from language-specific locales
 GNU_MAKE=make # default make utility
 
+######################
 # Target specific flags for configure go there
 case "$(uname -s)" in
 
     Darwin)
+	src_suffix=".tar.gz"
+	bin_suffix=".tgz"
 	;;
 
     Linux)
+	src_suffix=".tar.gz"
+	bin_suffix=".tgz"
 	;;
 
     CYGWIN*)
-	# For Cygwin, we assume we "cross compile" to 
+	# For Cygwin, we assume we "cross compile"
 	target_specific="--target=x86_64-w64-mingw32"
+	build_platform=windows-`uname -m`
+	src_suffix=".tar.gz"
+	bin_suffix=".zip"
 	;;
     MINGW32*|MSYS*)
 	echo "Unsupported build configuration"
 	exit -1
 	;;
     esac
-
-###############################################################################
-
-src_suffix=".tar.gz"
-bin_suffix=".tgz"
 
 ##################################
 # Ocarina build-time configuration
@@ -134,7 +137,7 @@ do_archive() {
 	    ;;
 
         .zip )
-	    zip -r ${archive_name} ${directory}
+	    zip -q -r ${archive_name} ${directory}
 	    ;;
 
         * )
@@ -251,17 +254,18 @@ do_packaging() {
 
     # Packaging and testing the package
 
-    try "${GNU_MAKE} distcheck DISTCHECK_CONFIGURE_FLAGS='--disable-debug'" \
-        "${GNU_MAKE} distcheck (Ocarina)"
-
+    try "${GNU_MAKE} dist DISTCHECK_CONFIGURE_FLAGS='--disable-debug'" \
+        "${GNU_MAKE} dist (Ocarina)"
+    
     archive="`ls ocarina-*${src_suffix}`"
     echo "  => Archive ${archive} built in directory `pwd`"
 
     # Source snapshot
 
-    new_archive="`basename ${archive} ${src_suffix}`-suite-src-${the_date}${src_suffix}"
-    mv ${archive} ${new_archive}
-    echo "  => Source archive ready: ${new_archive}"
+    base_archive_name="`basename ${archive} ${src_suffix}`"
+    src_archive_name="${base_archive_name}-suite-src-${the_date}${src_suffix}"
+    mv ${archive} ${src_archive_name}
+    echo "  => Source archive ready: ${src_archive_name}"
 }
 
 ###############################################################################
@@ -270,13 +274,12 @@ do_packaging() {
 do_build_from_tarball() {
     cd ${root_script_dir}/ocarina
 
-    archive="`ls ocarina-*${src_suffix}`"
-    archive_dir=`basename ${archive} ${src_suffix}`
+    archive_dir=`basename ${src_archive_name} ${src_suffix}`
     rm -r  ${archive_dir}
     mkdir -p ${archive_dir}
 
     # Extract the archive
-    try "tar xzvf ${archive} -C ${archive_dir} --strip-components=1" "extracting archive (Ocarina)"
+    try "tar xzvf ${src_archive_name} -C ${archive_dir} --strip-components=1" "extracting archive ${src_archive_name}"
 
     cd ${archive_dir}
 
@@ -299,14 +302,14 @@ do_build_from_tarball() {
     cd ..
 
     # Binary snapshots (Runtime and Examples)
-    bin_dir="${archive_dir}-suite-${build_platform}-${the_date}"
+    bin_dir="${base_archive_name}-suite-${build_platform}-${the_date}"
     bin_archive="${bin_dir}${bin_suffix}"
     rm -rf ${bin_dir}
     mkdir ${bin_dir}
     cp -rf ${ocarina_dist_install}/* "${bin_dir}/"
 
     # Remove any previous archive
-    rm -rf ocarina-*${bin_suffix} >> ${final_report_body} 2>&1
+    try "rm -rf ocarina-*${bin_suffix}" "DIST: remove old archives"
 
     # Create the archive
     do_archive ${bin_archive} ${bin_suffix} ${bin_dir}
@@ -389,9 +392,6 @@ fi
 
 if test x"${package_ocarina}" = x"yes"; then
     do_packaging
-fi
-
-if test x"${build_from_tarball}" = x"yes"; then
     do_build_from_tarball
 fi
 
