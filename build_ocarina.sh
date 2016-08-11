@@ -22,11 +22,13 @@ GNU_MAKE=make # default make utility
 case "$(uname -s)" in
 
     Darwin)
+	build_platform=darwin-`uname -m`
 	src_suffix=".tar.gz"
 	bin_suffix=".tgz"
 	;;
 
     Linux)
+	build_platform=linux-`uname -m`
 	src_suffix=".tar.gz"
 	bin_suffix=".tgz"
 	;;
@@ -34,7 +36,7 @@ case "$(uname -s)" in
     CYGWIN*)
 	# For Cygwin, we assume we "cross compile"
 	target_specific="--target=x86_64-w64-mingw32"
-	build_platform=windows-`uname -m`
+	build_platform=windows-x86
 	src_suffix=".tar.gz"
 	bin_suffix=".zip"
 	;;
@@ -256,7 +258,7 @@ do_packaging() {
 
     try "${GNU_MAKE} dist DISTCHECK_CONFIGURE_FLAGS='--disable-debug'" \
         "${GNU_MAKE} dist (Ocarina)"
-    
+
     archive="`ls ocarina-*${src_suffix}`"
     echo "  => Archive ${archive} built in directory `pwd`"
 
