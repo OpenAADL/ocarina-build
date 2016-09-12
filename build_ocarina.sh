@@ -67,6 +67,7 @@ ocarina_dist_install=${root_script_dir}/ocarina_dist_install
 # build_ocarina configuration
 
 debug_default="no"                      # "yes" to print debugging traces
+self_update_default="no"                # "yes" to update the current script then exit
 update_ocarina_default="no"             # "yes" to update the source directory
 build_ocarina_from_scratch_default="no" # "yes" to reload source directory
 build_ocarina_default="no"              # "yes" to build Ocarina
@@ -272,6 +273,14 @@ do_packaging() {
     echo "  => Source archive ready: ${src_archive_name}"
 }
 
+
+###############################################################################
+# Build the binary package for the Ocarina suite
+
+do_self_update() {
+     git pull origin master
+
+}
 ###############################################################################
 # Build the binary package for the Ocarina suite
 
@@ -330,6 +339,7 @@ usage() {
     echo ""
     echo "General commands"
     echo " -h | --help        : print usage"
+    echo " --self-update      : update this script"
     echo " -u | --update      : update Ocarina source directory"
     echo " -b | --build       : configure, build and install Ocarina"
     echo " -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib"
@@ -375,11 +385,13 @@ while test $# -gt 0; do
       --update | -u) update_ocarina="yes" ;;
       --prefix=*) prefix=${optarg};;
       --scenario=*) scenario=${optarg};;
+      --self-update) self_update="yes" ;;
       *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
   esac
   shift
 done
 
+if test -n "$scenario"; then
 case $scenario in
     fresh-install)
         # In this scenario, we do a fresh install of Ocarina, the user
@@ -408,11 +420,13 @@ case $scenario in
 
     *) echo "Invalid scenario name $scenario" && exit 1;;
 esac
+fi
 
 # 2) consolidate configuration parameters
 
 : ${build_ocarina_from_scratch=$build_ocarina_from_scratch_default}
 : ${update_ocarina=$update_ocarina_default}
+: ${self_update=$self_update_default}
 : ${debug=$debug_default}
 : ${build_ocarina=$build_ocarina_default}
 : ${package_ocarina=$package_ocarina_default}
@@ -434,6 +448,10 @@ if test x"${debug}" = x"yes"; then
 fi
 
 # 3) general execution scheme
+
+if test x"${self_update}" = x"yes"; then
+    do_self_update
+fi
 
 if test x"${update_ocarina}" = x"yes"; then
     do_check_out
