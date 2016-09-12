@@ -30,7 +30,7 @@ Build-time options, options to be passed along with -b
 Scenarios, specific combination of parameters
  --scenarion=<name> : run a specific scenario
 
- Valid names are nightly_build taste (see source code for details)
+ Valid names are fresh-install nightly-build taste (see source code for details)
  Note: this may overwrite other configuration parameters
 ```
 
