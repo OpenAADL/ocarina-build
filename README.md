@@ -1,25 +1,37 @@
 This repository proposes a script, `build_ocarina.sh`, to get source
 code, compile and test Ocarina.
 
-It relies on bash constructs to coordinate various activities to:
+It relies on shell constructs to coordinate various activities to:
 
 - fetch Ocarina source, with its runtimes PolyORB-HI/Ada and
-  PolyORB-HI/C
+  PolyORB-HI/C, and the AADLib library
 - compile Ocarina, and install it in a local directory
 - run Ocarina testsuites, and eventually collect coverage metrics
 
 ```
 Usage: ./build_ocarina.sh [switches]
- -u : update source directory
- -s : reset source directory (needs -u)
- -h : print usage
- -d : debug traces
 
- -b : build Ocarina
- -c : build Ocarina with coverage on (needs -b or -t)
- -g : build Ocarina with debug on (needs -b)
- -p : package Ocarina
- -t : run tests
+General commands
+ -h | --help        : print usage
+ -u | --update      : update Ocarina source directory
+ -b | --build       : configure, build and install Ocarina
+ -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib
+ -p | --package     : package ocarina distribution as tarball
+
+Update-time options, options to be passed along with -u
+ -s | --reset       : reset source directory prior to update
+
+Build-time options, options to be passed along with -b
+ --prefix=<dir>     : install ocarina in <dir>
+ --enable-gcov      : enable coverage during ocarina build
+ --enable-debug     : enable debug during ocarina build
+ --enable-python    : enable Python bindings
+
+Scenarios, specific combination of parameters
+ --scenarion=<name> : run a specific scenario
+
+ Valid names are nightly_build taste (see source code for details)
+ Note: this may overwrite other configuration parameters
 ```
 
 * The following command gets a fresh copy of Ocarina source code:

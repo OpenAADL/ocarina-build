@@ -40,6 +40,7 @@ case "$(uname -s)" in
 	src_suffix=".tar.gz"
 	bin_suffix=".zip"
 	;;
+
     MINGW32*|MSYS*)
 	echo "Unsupported build configuration"
 	exit -1
@@ -56,9 +57,10 @@ include_runtimes="polyorb-hi-ada polyorb-hi-c aadlib" # Ocarina runtimes
 ocarina_doc=""                          # --enable-doc to build documentation
 ocarina_debug=""                        # --enable-debug to enable debug
 ocarina_coverage=""                     # --enable-gcov to enable coverage
+ocarina_python=""                       # --enable-python to build Python bindings
 
-# We install Ocarina in a sub-directory of the current directory
-ocarina_repos_install=${root_script_dir}/ocarina_repos_install
+# Default installation prefix, can be overidden by the --prefix parameter
+prefix_default=${root_script_dir}/ocarina_repos_install
 ocarina_dist_install=${root_script_dir}/ocarina_dist_install
 
 #############################
@@ -203,15 +205,15 @@ do_build_ocarina() {
     try "./support/reconfig" "Reconfiguring (Ocarina)"
 
     # Configuring
-    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
+    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} ${ocarina_python} --prefix=${prefix}" \
         "First configure (Ocarina)"
 
     # Building
     try "${GNU_MAKE}" "Doing '${GNU_MAKE}' (Ocarina)"
 
     # Installing
-    if test -d ${ocarina_repos_install}; then
-        try "rm -rf ${ocarina_repos_install}" "Removing old install dir"
+    if test -d ${prefix}; then
+        try "rm -rf ${prefix}" "Removing old install dir"
     fi
 
     try "${GNU_MAKE} install" "Doing '${GNU_MAKE} install' (Ocarina)"
@@ -240,7 +242,7 @@ do_packaging() {
     try "./support/reconfig" "Reconfiguring (Ocarina)"
 
     # Configuring
-    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
+    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} ${ocarina_python} --prefix=${prefix}" \
         "First configure (Ocarina)"
 
     # Clean up old archives and build tree
@@ -251,7 +253,7 @@ do_packaging() {
 
     # Re configuring (since we've done 'make distclean')
 
-    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} --prefix=${ocarina_repos_install}" \
+    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} ${ocarina_python} --prefix=${prefix}" \
         "Second configure (Ocarina)"
 
     # Packaging and testing the package
@@ -325,16 +327,28 @@ do_build_from_tarball() {
 ###############################################################################
 usage() {
     echo "Usage: $0 [switches]"
-    echo " -u : update source directory"
-    echo " -s : reset source directory (needs -u)"
-    echo " -h : print usage"
-    echo " -d : debug traces"
     echo ""
-    echo " -b : build Ocarina"
-    echo " -c : build Ocarina with coverage on (needs -b or -t)"
-    echo " -g : build Ocarina with debug on (needs -b)"
-    echo " -p : package Ocarina"
-    echo " -t : run tests"
+    echo "General commands"
+    echo " -h | --help        : print usage"
+    echo " -u | --update      : update Ocarina source directory"
+    echo " -b | --build       : configure, build and install Ocarina"
+    echo " -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib"
+    echo " -p | --package     : package ocarina distribution as tarball"
+    echo ""
+    echo "Update-time options, options to be passed along with -u"
+    echo " -s | --reset       : reset source directory prior to update"
+    echo ""
+    echo "Build-time options, options to be passed along with -b"
+    echo " --prefix=<dir>     : install ocarina in <dir>"
+    echo " --enable-gcov      : enable coverage during ocarina build"
+    echo " --enable-debug     : enable debug during ocarina build"
+    echo " --enable-python    : enable Python bindings"
+    echo ""
+    echo "Scenarios, specific combination of parameters"
+    echo " --scenarion=<name> : run a specific scenario"
+    echo ""
+    echo " Valid names are fresh-install nightly-build taste "
+    echo " See source code for details on actual parameters"
 }
 
 ###############################################################################
@@ -342,20 +356,58 @@ usage() {
 
 # 1) parse command line parameters
 
-while getopts "bcdghpstu" OPTION; do
-    case "$OPTION" in
-        b) build_ocarina="yes" ;;
-        c) ocarina_coverage="--enable-gcov" ;;
-        d) debug="yes" ;;
-        g) ocarina_debug="--enable-debug" ;;
-        h) usage ; exit 0 ;;
-        p) package_ocarina="yes" ;;
-        s) build_ocarina_from_scratch="yes" ;;
-        t) test_ocarina="yes" ;;
-        u) update_ocarina="yes" ;;
-        *) echo "unrecognized option" ; usage ;;
-    esac
+while test $# -gt 0; do
+  case "$1" in
+  -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+  *) optarg= ;;
+  esac
+
+  case $1 in
+      --build | -b) build_ocarina="yes"  ;;
+      -d) debug="yes" ;;
+      --enable-debug) ocarina_debug="--enable-debug" ;;
+      --enable-gcov) ocarina_coverage="--enable-gcov" ;;
+      --enable-python) ocarina_python="--enable-python --enable-shared";;
+      --help | -h) usage 1>&2 && exit 1 ;;
+      --package | -p) package_ocarina="yes" ;;
+      --reset | -s) build_ocarina_from_scratch="yes" ;;
+      --runt-test | -t) test_ocarina="yes" ;;
+      --update | -u) update_ocarina="yes" ;;
+      --prefix=*) prefix=${optarg};;
+      --scenario=*) scenario=${optarg};;
+      *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
+  esac
+  shift
 done
+
+case $scenario in
+    fresh-install)
+        # In this scenario, we do a fresh install of Ocarina, the user
+        # may override the installation prefix using --prefix
+        build_ocarina_from_scratch="yes"
+        update_ocarina="yes"
+        build_ocarina="yes"
+        ;;
+
+    nightly-build)
+        update_ocarina="yes"
+        build_ocarina="yes"
+        test_ocarina="yes"
+        package_ocarina="yes"
+        ;;
+
+    taste)
+        # In this scenario, we update and build Ocarina with Python
+        # and debug enabled. Use TASTE specific installation prefix
+        update_ocarina="yes"
+        build_ocarina="yes"
+        ocarina_debug="--enable-debug"
+        ocarina_python="--enable-python --enable-shared"
+        prefix="$HOME/tool-inst"
+        ;;
+
+    *) echo "Invalid scenario name $scenario" && exit 1;;
+esac
 
 # 2) consolidate configuration parameters
 
@@ -365,17 +417,20 @@ done
 : ${build_ocarina=$build_ocarina_default}
 : ${package_ocarina=$package_ocarina_default}
 : ${test_ocarina=$test_ocarina_default}
+: ${prefix=$prefix_default}
 
 if test x"${debug}" = x"yes"; then
-    echo build_ocarina_from_scratch: $build_ocarina_from_scratch
+    echo build_ocarina_from_scratch : $build_ocarina_from_scratch
     echo update_ocarina : $update_ocarina
     echo debug : $debug
     echo build_ocarina : $build_ocarina
     echo package_ocarina : $package_ocarina
     echo test_ocarina : $test_ocarina
+    echo prefix : $prefix
 
     echo build ocarina with debug:    $ocarina_debug
     echo build ocarina with coverage: $ocarina_coverage
+    echo build ocarina with Python: $ocarina_python
 fi
 
 # 3) general execution scheme
