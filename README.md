@@ -14,6 +14,8 @@ Usage: ./build_ocarina.sh [switches]
 General commands
  -h | --help        : print usage
  --self-update      : update this script
+
+Script commands
  -u | --update      : update Ocarina source directory
  -b | --build       : configure, build and install Ocarina
  -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib

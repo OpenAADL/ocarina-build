@@ -340,6 +340,8 @@ usage() {
     echo "General commands"
     echo " -h | --help        : print usage"
     echo " --self-update      : update this script"
+    echo ""
+    echo "Script commands"
     echo " -u | --update      : update Ocarina source directory"
     echo " -b | --build       : configure, build and install Ocarina"
     echo " -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib"
