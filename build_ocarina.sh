@@ -434,7 +434,7 @@ case $scenario in
         update_ocarina="yes"
         build_ocarina="yes"
         ocarina_debug="--enable-debug"
-        ocarina_python="--enable-python --enable-shared"
+        #ocarina_python="--enable-python --enable-shared"
         prefix="$HOME/tool-inst"
         ;;
 
