@@ -435,7 +435,7 @@ case $scenario in
         build_ocarina="yes"
         ocarina_debug="--enable-debug"
         #ocarina_python="--enable-python --enable-shared"
-        prefix="$HOME/tool-inst"
+        prefix="$HOME/tool-inst/ocarina"
         ;;
 
     *) echo "Invalid scenario name $scenario" && exit 1;;
