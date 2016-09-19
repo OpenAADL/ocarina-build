@@ -16,6 +16,7 @@ General commands
  --self-update      : update this script
 
 Script commands
+ -c | --configure   : configure Ocarina source directory
  -u | --update      : update Ocarina source directory
  -b | --build       : configure, build and install Ocarina
  -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib

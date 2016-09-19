@@ -71,6 +71,7 @@ self_update_default="no"                # "yes" to update the current script the
 update_ocarina_default="no"             # "yes" to update the source directory
 build_ocarina_from_scratch_default="no" # "yes" to reload source directory
 build_ocarina_default="no"              # "yes" to build Ocarina
+configure_ocarina_default="no"          # "yes" to build Ocarina
 package_ocarina_default="no"            # "yes" to package Ocarina
 test_ocarina_default="no"               # "yes" to run make check
 
@@ -194,6 +195,21 @@ do_check_out() {
 	    cd ../..
         fi
     fi
+}
+
+###############################################################################
+# Configure Ocarina source directory
+
+do_configure_ocarina() {
+    cd ${root_script_dir}/ocarina
+
+    # Bootstrap the build
+    try "./support/reconfig" "Reconfiguring (Ocarina)"
+
+    # Configuring
+    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} ${ocarina_python} --prefix=${prefix}" \
+        "First configure (Ocarina)"
+
 }
 
 ###############################################################################
@@ -342,6 +358,7 @@ usage() {
     echo " --self-update      : update this script"
     echo ""
     echo "Script commands"
+    echo " -c | --configure   : configure Ocarina source directory"
     echo " -u | --update      : update Ocarina source directory"
     echo " -b | --build       : configure, build and install Ocarina"
     echo " -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib"
@@ -376,6 +393,7 @@ while test $# -gt 0; do
 
   case $1 in
       --build | -b) build_ocarina="yes"  ;;
+      -c | --configure) configure_ocarina="yes" ;;
       -d) debug="yes" ;;
       --enable-debug) ocarina_debug="--enable-debug" ;;
       --enable-gcov) ocarina_coverage="--enable-gcov" ;;
@@ -428,6 +446,7 @@ fi
 
 : ${build_ocarina_from_scratch=$build_ocarina_from_scratch_default}
 : ${update_ocarina=$update_ocarina_default}
+: ${configure_ocarina=$configure_ocarina_default}
 : ${self_update=$self_update_default}
 : ${debug=$debug_default}
 : ${build_ocarina=$build_ocarina_default}
@@ -444,7 +463,7 @@ if test x"${debug}" = x"yes"; then
     echo test_ocarina : $test_ocarina
     echo prefix : $prefix
 
-    echo build ocarina with debug:    $ocarina_debug
+    echo build ocarina with debug: $ocarina_debug
     echo build ocarina with coverage: $ocarina_coverage
     echo build ocarina with Python: $ocarina_python
 fi
@@ -457,6 +476,10 @@ fi
 
 if test x"${update_ocarina}" = x"yes"; then
     do_check_out
+fi
+
+if test x"${configure_ocarina}" = x"yes"; then
+    do_configure_ocarina
 fi
 
 if test x"${build_ocarina}" = x"yes"; then
