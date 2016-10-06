@@ -294,7 +294,7 @@ do_packaging() {
 # Build the binary package for the Ocarina suite
 
 do_self_update() {
-     git pull origin master
+     try "git pull origin master" "Self updating"
 
 }
 ###############################################################################
