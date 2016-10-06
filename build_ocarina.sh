@@ -374,7 +374,7 @@ usage() {
     echo " --enable-python    : enable Python bindings"
     echo ""
     echo "Scenarios, specific combination of parameters"
-    echo " --scenarion=<name> : run a specific scenario"
+    echo " --scenario=<name> : run a specific scenario"
     echo ""
     echo " Valid names are fresh-install nightly-build taste "
     echo " See source code for details on actual parameters"
