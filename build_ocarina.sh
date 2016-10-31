@@ -376,7 +376,7 @@ usage() {
     echo "Scenarios, specific combination of parameters"
     echo " --scenario=<name> : run a specific scenario"
     echo ""
-    echo " Valid names are fresh-install nightly-build taste "
+    echo " Valid names are coverage fresh-install nightly-build taste "
     echo " See source code for details on actual parameters"
 }
 
@@ -426,6 +426,14 @@ case $scenario in
         build_ocarina="yes"
         test_ocarina="yes"
         package_ocarina="yes"
+        ;;
+
+    coverage)
+        update_ocarina="yes"
+        build_ocarina="yes"
+        test_ocarina="yes"
+        ocarina_debug="--enable-debug"
+        ocarina_coverage="--enable-gcov"
         ;;
 
     taste)
