@@ -86,7 +86,7 @@ prefix_default=${root_script_dir}/ocarina_repos_install
 ocarina_dist_install=${root_script_dir}/ocarina_dist_install
 
 # Defaut repository, can be overriden by the --remote parameter
-repository_default="https://github.com/OpenAADL/ocarina.git"
+repository_default="https://github.com/OpenAADL"
 
 #############################
 # build_ocarina configuration
@@ -192,7 +192,7 @@ do_check_out() {
         # Fetch Ocarina sources
 
         rm -rf ocarina
-        try "git clone ${repository}" \
+        try "git clone ${repository}/ocarina.git" \
 	    "Checkout the Ocarina sources"
 
         cd ocarina
@@ -200,7 +200,7 @@ do_check_out() {
         # Check out the requested runtimes
 
         if test ! -z "${include_runtimes}"; then
-	    try "./support/get_runtimes.sh ${include_runtimes}" \
+	    try "./support/get_runtimes.sh --root_url=${repository} ${include_runtimes}" \
 	        "Fetching runtimes '${include_runtimes}'"
         fi;
 
