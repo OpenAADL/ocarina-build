@@ -1,3 +1,5 @@
+# build_ocarina.sh
+
 The `build_ocarina.sh` script is a helper program to get source code,
 compile package and test Ocarina on all supported platforms.
 
