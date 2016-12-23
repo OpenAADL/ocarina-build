@@ -3,9 +3,9 @@
 ## About
 
 The `build_ocarina.sh` script is a helper program to get source code,
-compile package and test Ocarina on all supported platforms.
+compile package and test Ocarina on all supported platforms. It relies 
+on shell constructs to coordinate various activities:
 
-It relies on shell constructs to coordinate various activities:
 - fetch Ocarina source, with its runtimes PolyORB-HI/Ada and
   PolyORB-HI/C, and the AADLib library
 - compile Ocarina, and install it in a local directory
@@ -18,6 +18,8 @@ The preferred way to install this script is simply to clone the repository:
  ```
  git clone https://github.com/OpenAADL/ocarina-build.git
  ```
+ 
+ This will ensure future update of the script in a seamless way.
  
 ## Usage
 
