@@ -85,6 +85,9 @@ ocarina_python=""                       # --enable-python to build Python bindin
 prefix_default=${root_script_dir}/ocarina_repos_install
 ocarina_dist_install=${root_script_dir}/ocarina_dist_install
 
+# Defaut repository, can be overriden by the --remote parameter
+repository_default="https://github.com/OpenAADL/ocarina.git"
+
 #############################
 # build_ocarina configuration
 
@@ -189,7 +192,7 @@ do_check_out() {
         # Fetch Ocarina sources
 
         rm -rf ocarina
-        try "git clone https://github.com/yoogx/ocarina.git" \
+        try "git clone ${repository}" \
 	    "Checkout the Ocarina sources"
 
         cd ocarina
@@ -388,6 +391,7 @@ usage() {
     echo ""
     echo "Update-time options, options to be passed along with -u"
     echo " -s | --reset       : reset source directory prior to update"
+    echo " --remote=<URL>     : Set URL of the Ocarina git repository"
     echo ""
     echo "Build-time options, options to be passed along with -b"
     echo " --prefix=<dir>     : install ocarina in <dir>"
@@ -426,6 +430,7 @@ while test $# -gt 0; do
       --runt-test | -t) test_ocarina="yes" ;;
       --update | -u) update_ocarina="yes" ;;
       --prefix=*) prefix=${optarg};;
+      --remote=*) repository=${optarg};;
       --scenario=*) scenario=${optarg};;
       --self-update) self_update="yes" ;;
       *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
@@ -483,6 +488,7 @@ fi
 : ${package_ocarina=$package_ocarina_default}
 : ${test_ocarina=$test_ocarina_default}
 : ${prefix=$prefix_default}
+: ${repository=$repository_default}
 
 if test x"${debug}" = x"yes"; then
     echo build_ocarina_from_scratch : $build_ocarina_from_scratch

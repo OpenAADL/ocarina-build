@@ -24,6 +24,7 @@ Script commands
 
 Update-time options, options to be passed along with -u
  -s | --reset       : reset source directory prior to update
+ --remote=<URL>     : Set URL of the Ocarina git repository
 
 Build-time options, options to be passed along with -b
  --prefix=<dir>     : install ocarina in <dir>
