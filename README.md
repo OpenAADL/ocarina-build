@@ -1,12 +1,12 @@
-This repository proposes a script, `build_ocarina.sh`, to get source
-code, compile and test Ocarina.
+The `build_ocarina.sh` script is a helper program to get source code,
+compile package and test Ocarina on all supported platforms.
 
-It relies on shell constructs to coordinate various activities to:
-
+It relies on shell constructs to coordinate various activities:
 - fetch Ocarina source, with its runtimes PolyORB-HI/Ada and
   PolyORB-HI/C, and the AADLib library
 - compile Ocarina, and install it in a local directory
 - run Ocarina testsuites, and eventually collect coverage metrics
+- package Ocarina and its runtime
 
 ```
 Usage: ./build_ocarina.sh [switches]
@@ -37,16 +37,4 @@ Scenarios, specific combination of parameters
 
  Valid names are coverage fresh-install nightly-build taste (see source code for details)
  Note: this may overwrite other configuration parameters
-```
-
-* The following command gets a fresh copy of Ocarina source code:
-
-```
-./build_ocarina.sh -s -u
-```
-
-* The following command compiles and installs Ocarina:
-
-```
-./build_ocarina.sh -b
 ```
