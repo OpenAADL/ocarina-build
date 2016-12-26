@@ -402,7 +402,7 @@ usage() {
     echo "Scenarios, specific combination of parameters"
     echo " --scenario=<name> : run a specific scenario"
     echo ""
-    echo " Valid names are coverage fresh-install nightly-build taste "
+    echo " Valid names are coverage fresh-install nightly-build taste travis-ci"
     echo " See source code for details on actual parameters"
 }
 
@@ -446,6 +446,15 @@ case $scenario in
         build_ocarina_from_scratch="yes"
         update_ocarina="yes"
         build_ocarina="yes"
+        ;;
+
+    travis-ci)
+        # In this scenario, we do a fresh install of Ocarina, the user
+        # may override the installation prefix using --prefix
+        build_ocarina_from_scratch="yes"
+        update_ocarina="yes"
+        build_ocarina="yes"
+        test_ocarina="yes"
         ;;
 
     nightly-build)
