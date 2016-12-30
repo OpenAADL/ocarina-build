@@ -31,10 +31,10 @@
 ######################
 # script configuration
 
-root_script_dir=`dirname $0`; cd ${root_script_dir}; root_script_dir=`pwd`
-the_date=`date +"%Y%m%d"`
-tmp_dir="$HOME/tmp"; mkdir -p $tmp_dir
-is_error=$tmp_dir/build_ocarina_ERROR; rm -f $is_error
+root_script_dir="$(dirname "$0")"; cd "${root_script_dir}"; root_script_dir=$(pwd)
+the_date=$(date +"%Y%m%d")
+tmp_dir="$HOME/tmp"; mkdir -p "$tmp_dir"
+is_error=$tmp_dir/build_ocarina_ERROR; rm -f "$is_error"
 
 LANG=C        # ensure there is no pollution from language-specific locales
 GNU_MAKE=make # default make utility
@@ -44,13 +44,13 @@ GNU_MAKE=make # default make utility
 case "$(uname -s)" in
 
     Darwin)
-	build_platform=darwin-`uname -m`
+	build_platform=darwin-$(uname -m)
 	src_suffix=".tar.gz"
 	bin_suffix=".tgz"
 	;;
 
     Linux)
-	build_platform=linux-`uname -m`
+	build_platform=linux-$(uname -m)
 	src_suffix=".tar.gz"
 	bin_suffix=".tgz"
 	;;
@@ -133,38 +133,38 @@ error_msg() {
 
 try() {
     # If previous errors are detected do not cause an error cascade.
-    if [ -f ${is_error} ]; then
+    if [ -f "${is_error}" ]; then
         exit 0
     fi
 
     # Execute the command and get the result in a temporary file
 
-    try_cmd_and_args=$1
+    try_cmd_and_args="$1"
     try_msg="$2"
     try_report="${tmp_dir}/report.$$"
 
-    ${try_cmd_and_args} >> ${try_report} 2>&1
+    ${try_cmd_and_args} >> "${try_report}" 2>&1
 
     return_code=$?
 
     # If the execution succeded, exit normally, else, returns the log
 
     if [ ${return_code} -eq 0 ] ; then
-        log_msg "[`date +"%Y-%m-%d-%H:%M"`] ${try_msg}" | tee -a ${final_report_body}
-        rm -f ${try_report}
+        log_msg "[$(date +"%Y-%m-%d-%H:%M")] ${try_msg}"
+        rm -f "${try_report}"
         return 0
     fi
 
-    error_msg "[`date +"%Y-%m-%d-%H:%M"`] ${try_msg}" | tee -a ${final_report_body}
+    error_msg "[$(date +"%Y-%m-%d-%H:%M")] ${try_msg}"
 
     # Set error
 
-    touch ${is_error}
+    touch "${is_error}"
 
-    # Display the report message
+    # Display the report message and abort
 
-    cat ${try_report}
-    return 1
+    cat "${try_report}"
+    exit 1
 }
 
 ###############################################################################
@@ -181,15 +181,15 @@ do_archive() {
 
     case "${format}" in
         .tar.gz | .tgz )
-	    tar czf ${archive_name} ${directory}
+	    tar czf "${archive_name}" "${directory}"
 	    ;;
 
         .tar.bz2 | .tbz2 )
-	    tar cjf ${archive_name} ${directory}
+	    tar cjf "${archive_name}" "${directory}"
 	    ;;
 
         .zip )
-	    zip -q -r ${archive_name} ${directory}
+	    zip -q -r "${archive_name}" "${directory}"
 	    ;;
 
         * )
@@ -208,7 +208,7 @@ do_check_out() {
     if test x"${build_ocarina_from_scratch}" = x"yes"; then
     # Go to the temporary directory
 
-        cd ${root_script_dir}
+        cd "${root_script_dir}"
 
         # Fetch Ocarina sources
 
@@ -226,7 +226,7 @@ do_check_out() {
         fi;
 
     else
-        cd ${root_script_dir}/ocarina
+        cd "${root_script_dir}/ocarina"
         try "git pull" "Updating Ocarina repository"
 
         # Update the requested runtimes
@@ -234,7 +234,7 @@ do_check_out() {
         if test ! -z "${include_runtimes}"; then
 	    cd resources/runtime
 	    for r in ${include_runtimes}; do
-	        cd ${r}
+	        cd "${r}" || exit
 	        try "git pull" "Updating runtime '${r}'"
 	        cd ..
 	    done
@@ -247,7 +247,7 @@ do_check_out() {
 # Configure Ocarina source directory
 
 do_configure_ocarina() {
-    cd ${root_script_dir}/ocarina
+    cd "${root_script_dir}/ocarina"
 
     # Bootstrap the build
     try "./support/reconfig" "Reconfiguring (Ocarina)"
@@ -262,7 +262,7 @@ do_configure_ocarina() {
 # Test the Ocarina build from the repository
 
 do_build_ocarina() {
-    cd ${root_script_dir}/ocarina
+    cd "${root_script_dir}/ocarina"
 
     # Bootstrap the build
     try "./support/reconfig" "Reconfiguring (Ocarina)"
@@ -275,7 +275,7 @@ do_build_ocarina() {
     try "${GNU_MAKE}" "Doing '${GNU_MAKE}' (Ocarina)"
 
     # Installing
-    if test -d ${prefix}; then
+    if test -d "${prefix}"; then
         try "rm -rf ${prefix}" "Removing old install dir"
     fi
 
@@ -286,7 +286,7 @@ do_build_ocarina() {
 # Testing repository version of Ocarina
 
 do_test_ocarina() {
-    cd ${root_script_dir}/ocarina
+    cd "${root_script_dir}/ocarina"
 
     try "${GNU_MAKE} check" "Testing (Ocarina)"
 
@@ -299,7 +299,7 @@ do_test_ocarina() {
 # Packaging Ocarina
 
 do_packaging() {
-    cd ${root_script_dir}/ocarina
+    cd "${root_script_dir}/ocarina"
 
     # Bootstrap the build
     try "./support/reconfig" "Reconfiguring (Ocarina)"
@@ -309,8 +309,8 @@ do_packaging() {
         "First configure (Ocarina)"
 
     # Clean up old archives and build tree
-    old_archive="`ls ocarina-*${src_suffix} 2> /dev/null`"
-    rm -f ${old_archive}
+    old_archive="$(ls "ocarina-*${src_suffix}" 2> /dev/null)"
+    rm -f "${old_archive}"
 
     try "${GNU_MAKE} distclean" "${GNU_MAKE} distclean (Ocarina)"
 
@@ -324,15 +324,15 @@ do_packaging() {
     try "${GNU_MAKE} dist DISTCHECK_CONFIGURE_FLAGS='--disable-debug'" \
         "${GNU_MAKE} dist (Ocarina)"
 
-    archive="`ls ocarina-*${src_suffix}`"
-    echo "  => Archive ${archive} built in directory `pwd`"
+    archive="$(ls ocarina-*${src_suffix})"
+    echo "  => Archive ${archive} built in directory $(pwd)"
 
     # Source snapshot
 
-    base_archive_name="`basename ${archive} ${src_suffix}`"
+    base_archive_name=$(basename "${archive}" "${src_suffix}")
     src_archive_name="${base_archive_name}-suite-src-${the_date}${src_suffix}"
-    mv ${archive} ${src_archive_name}
-    echo "  => Source archive ready: ${src_archive_name}"
+    mv "${archive}" "${src_archive_name}"
+    echo "  => Source archive ready:" "${src_archive_name}"
 }
 
 
@@ -347,16 +347,16 @@ do_self_update() {
 # Build the binary package for the Ocarina suite
 
 do_build_from_tarball() {
-    cd ${root_script_dir}/ocarina
+    cd "${root_script_dir}/ocarina"
 
-    archive_dir=`basename ${src_archive_name} ${src_suffix}`
-    rm -r  ${archive_dir}
-    mkdir -p ${archive_dir}
+    archive_dir=$(basename "${src_archive_name}" "${src_suffix}")
+    rm -r  "${archive_dir}"
+    mkdir -p "${archive_dir}"
 
     # Extract the archive
     try "tar xzvf ${src_archive_name} -C ${archive_dir} --strip-components=1" "extracting archive ${src_archive_name}"
 
-    cd ${archive_dir}
+    cd "${archive_dir}"
 
     # Configuring
     try "./configure ${target_specific} --disable-debug --prefix=${ocarina_dist_install}" \
@@ -366,7 +366,7 @@ do_build_from_tarball() {
     try "${GNU_MAKE}" "DIST: ${GNU_MAKE} (Ocarina)"
 
     # Installing
-    if test -d ${ocarina_dist_install}; then
+    if test -d "${ocarina_dist_install}"; then
         try "rm -rf ${ocarina_dist_install}" "DIST: Removing old install dir"
     fi
 
@@ -379,20 +379,20 @@ do_build_from_tarball() {
     # Binary snapshots (Runtime and Examples)
     bin_dir="${base_archive_name}-suite-${build_platform}-${the_date}"
     bin_archive="${bin_dir}${bin_suffix}"
-    rm -rf ${bin_dir}
-    mkdir ${bin_dir}
-    cp -rf ${ocarina_dist_install}/* "${bin_dir}/"
+    rm -rf "${bin_dir}"
+    mkdir "${bin_dir}"
+    cp -rf "${ocarina_dist_install}/*" "${bin_dir}/"
 
     # Remove any previous archive
     try "rm -rf ocarina-*${bin_suffix}" "DIST: remove old archives"
 
     # Create the archive
-    do_archive ${bin_archive} ${bin_suffix} ${bin_dir}
+    do_archive "${bin_archive}" "${bin_suffix}" "${bin_dir}"
 
-    rm -rf ${bin_dir}
+    rm -rf "${bin_dir}"
 
-    archive="`ls ocarina-*${bin_suffix}`"
-    echo "  => Archive ${archive} built in directory `pwd`"
+    archive="$(ls ocarina-*${bin_suffix})"
+    echo "  => Archive ${archive} built in directory $(pwd)"
 }
 
 ###############################################################################
@@ -436,7 +436,7 @@ usage() {
 while test $# -gt 0; do
   case "$1" in
   -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
-  *) optarg= ;;
+  *) optarg="" ;;
   esac
 
   case $1 in
@@ -527,24 +527,24 @@ fi
 : ${repository=$repository_default}
 
 if test x"${debug}" = x"yes"; then
-    echo build_ocarina_from_scratch : $build_ocarina_from_scratch
-    echo update_ocarina : $update_ocarina
-    echo debug : $debug
-    echo build_ocarina : $build_ocarina
-    echo package_ocarina : $package_ocarina
-    echo test_ocarina : $test_ocarina
-    echo prefix : $prefix
+    echo build_ocarina_from_scratch : "$build_ocarina_from_scratch"
+    echo update_ocarina : "$update_ocarina"
+    echo debug : "$debug"
+    echo build_ocarina : "$build_ocarina"
+    echo package_ocarina : "$package_ocarina"
+    echo test_ocarina : "$test_ocarina"
+    echo prefix : "$prefix"
 
-    echo build ocarina with debug: $ocarina_debug
-    echo build ocarina with coverage: $ocarina_coverage
-    echo build ocarina with Python: $ocarina_python
+    echo build ocarina with debug: "$ocarina_debug"
+    echo build ocarina with coverage: "$ocarina_coverage"
+    echo build ocarina with Python: "$ocarina_python"
 fi
 
 # 3) general execution scheme
 
 if test x"${build_info}" = x"yes"; then
-    echo "OS:       " `uname -msr`
-    echo "Compiler: " `gnatmake --version | head -n 1`
+    echo "OS:       " "$(uname -msr)"
+    echo "Compiler: " "$(gnatmake --version | head -n 1)"
 fi
 
 if test x"${self_update}" = x"yes"; then
