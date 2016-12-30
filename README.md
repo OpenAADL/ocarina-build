@@ -1,4 +1,4 @@
-# build_ocarina.sh [![Issue Count](https://codeclimate.com/github/OpenAADL/ocarina-build/badges/issue_count.svg)](https://codeclimate.com/github/OpenAADL/ocarina-build)
+# build_ocarina.sh [![Issue Count](https://codeclimate.com/github/OpenAADL/ocarina-build/badges/issue_count.svg)](https://codeclimate.com/github/OpenAADL/ocarina-build) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## About
 
