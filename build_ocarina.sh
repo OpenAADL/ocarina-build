@@ -208,7 +208,7 @@ do_check_out() {
     if test x"${build_ocarina_from_scratch}" = x"yes"; then
     # Go to the temporary directory
 
-        cd "${root_script_dir}"
+        cd "${root_script_dir}" || exit 1
 
         # Fetch Ocarina sources
 
@@ -216,7 +216,7 @@ do_check_out() {
         try "git clone ${repository}/ocarina.git" \
 	    "Checkout the Ocarina sources"
 
-        cd ocarina
+        cd ocarina || exit 1
 
         # Check out the requested runtimes
 
@@ -226,13 +226,13 @@ do_check_out() {
         fi;
 
     else
-        cd "${root_script_dir}/ocarina"
+        cd "${root_script_dir}/ocarina" || exit 1
         try "git pull" "Updating Ocarina repository"
 
         # Update the requested runtimes
 
         if test ! -z "${include_runtimes}"; then
-	    cd resources/runtime
+	    cd resources/runtime || exit 1
 	    for r in ${include_runtimes}; do
 	        cd "${r}" || exit
 	        try "git pull" "Updating runtime '${r}'"
@@ -247,7 +247,7 @@ do_check_out() {
 # Configure Ocarina source directory
 
 do_configure_ocarina() {
-    cd "${root_script_dir}/ocarina"
+    cd "${root_script_dir}/ocarina" || exit 1
 
     # Bootstrap the build
     try "./support/reconfig" "Reconfiguring (Ocarina)"
@@ -262,7 +262,7 @@ do_configure_ocarina() {
 # Test the Ocarina build from the repository
 
 do_build_ocarina() {
-    cd "${root_script_dir}/ocarina"
+    cd "${root_script_dir}/ocarina" || exit 1
 
     # Bootstrap the build
     try "./support/reconfig" "Reconfiguring (Ocarina)"
@@ -286,7 +286,7 @@ do_build_ocarina() {
 # Testing repository version of Ocarina
 
 do_test_ocarina() {
-    cd "${root_script_dir}/ocarina"
+    cd "${root_script_dir}/ocarina" || exit 1
 
     try "${GNU_MAKE} check" "Testing (Ocarina)"
 
@@ -299,7 +299,7 @@ do_test_ocarina() {
 # Packaging Ocarina
 
 do_packaging() {
-    cd "${root_script_dir}/ocarina"
+    cd "${root_script_dir}/ocarina" || exit 1
 
     # Bootstrap the build
     try "./support/reconfig" "Reconfiguring (Ocarina)"
@@ -347,7 +347,7 @@ do_self_update() {
 # Build the binary package for the Ocarina suite
 
 do_build_from_tarball() {
-    cd "${root_script_dir}/ocarina"
+    cd "${root_script_dir}/ocarina" || exit 1
 
     archive_dir=$(basename "${src_archive_name}" "${src_suffix}")
     rm -r  "${archive_dir}"
@@ -356,7 +356,7 @@ do_build_from_tarball() {
     # Extract the archive
     try "tar xzvf ${src_archive_name} -C ${archive_dir} --strip-components=1" "extracting archive ${src_archive_name}"
 
-    cd "${archive_dir}"
+    cd "${archive_dir}" || exit 1
 
     # Configuring
     try "./configure ${target_specific} --disable-debug --prefix=${ocarina_dist_install}" \
