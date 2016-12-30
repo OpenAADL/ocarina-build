@@ -76,7 +76,7 @@ include_runtimes="polyorb-hi-ada polyorb-hi-c aadlib" # Ocarina runtimes
 
 # Note: check Ocarina configure script for details
 
-ocarina_doc=""                          # --enable-doc to build documentation
+#ocarina_doc=""                          # --enable-doc to build documentation
 ocarina_debug=""                        # --enable-debug to enable debug
 ocarina_coverage=""                     # --enable-gcov to enable coverage
 ocarina_python=""                       # --enable-python to build Python bindings
@@ -435,8 +435,10 @@ usage() {
 
 while test $# -gt 0; do
   case "$1" in
-  -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
-  *) optarg="" ;;
+      -*=*) arg="$1"
+            optarg=${arg//[-_a-zA-Z0-9]*=/}
+            ;;
+      *) optarg="" ;;
   esac
 
   case $1 in
@@ -523,7 +525,7 @@ fi
 : ${build_ocarina=$build_ocarina_default}
 : ${package_ocarina=$package_ocarina_default}
 : ${test_ocarina=$test_ocarina_default}
-: ${prefix=$prefix_default}
+: "${prefix="$prefix_default"}"
 : ${repository=$repository_default}
 
 if test x"${debug}" = x"yes"; then
