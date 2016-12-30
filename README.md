@@ -46,6 +46,7 @@ Build-time options, options to be passed along with -b
  --enable-gcov      : enable coverage during ocarina build
  --enable-debug     : enable debug during ocarina build
  --enable-python    : enable Python bindings
+ --build-info       : display information on build environment
 
 Scenarios, specific combination of parameters
  --scenario=<name> : run a specific scenario
