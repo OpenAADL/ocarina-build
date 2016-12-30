@@ -91,6 +91,7 @@ repository_default="https://github.com/OpenAADL"
 #############################
 # build_ocarina configuration
 
+build_info_default="no"                 # "yes" to print build info
 debug_default="no"                      # "yes" to print debugging traces
 self_update_default="no"                # "yes" to update the current script then exit
 update_ocarina_default="no"             # "yes" to update the source directory
@@ -398,6 +399,7 @@ usage() {
     echo " --enable-gcov      : enable coverage during ocarina build"
     echo " --enable-debug     : enable debug during ocarina build"
     echo " --enable-python    : enable Python bindings"
+    echo " --build-info       : display information on build environment"
     echo ""
     echo "Scenarios, specific combination of parameters"
     echo " --scenario=<name> : run a specific scenario"
@@ -419,6 +421,7 @@ while test $# -gt 0; do
 
   case $1 in
       --build | -b) build_ocarina="yes"  ;;
+      --build-info) build_info="yes" ;;
       -c | --configure) configure_ocarina="yes" ;;
       -d) debug="yes" ;;
       --enable-debug) ocarina_debug="--enable-debug" ;;
@@ -443,6 +446,7 @@ case $scenario in
     fresh-install)
         # In this scenario, we do a fresh install of Ocarina, the user
         # may override the installation prefix using --prefix
+        build_info="yes"
         build_ocarina_from_scratch="yes"
         update_ocarina="yes"
         build_ocarina="yes"
@@ -451,6 +455,7 @@ case $scenario in
     travis-ci)
         # In this scenario, we do a fresh install of Ocarina, the user
         # may override the installation prefix using --prefix
+        build_info="yes"
         build_ocarina_from_scratch="yes"
         update_ocarina="yes"
         build_ocarina="yes"
@@ -458,6 +463,7 @@ case $scenario in
         ;;
 
     nightly-build)
+        build_info="yes"
         update_ocarina="yes"
         build_ocarina="yes"
         test_ocarina="yes"
@@ -488,6 +494,7 @@ fi
 
 # 2) consolidate configuration parameters
 
+: ${build_info=$build_info_default}
 : ${build_ocarina_from_scratch=$build_ocarina_from_scratch_default}
 : ${update_ocarina=$update_ocarina_default}
 : ${configure_ocarina=$configure_ocarina_default}
@@ -514,6 +521,11 @@ if test x"${debug}" = x"yes"; then
 fi
 
 # 3) general execution scheme
+
+if test x"${build_info}" = x"yes"; then
+    echo "OS:       " `uname -msr`
+    echo "Compiler: " `gnatmake --version | head -n 1`
+fi
 
 if test x"${self_update}" = x"yes"; then
     do_self_update

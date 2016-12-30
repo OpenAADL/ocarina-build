@@ -3,7 +3,7 @@
 ## About
 
 The `build_ocarina.sh` script is a helper program to get source code,
-compile package and test Ocarina on all supported platforms. It relies 
+compile package and test Ocarina on all supported platforms. It relies
 on shell constructs to coordinate various activities:
 
 - fetch Ocarina source, with its runtimes PolyORB-HI/Ada and
@@ -18,9 +18,9 @@ The preferred way to install this script is simply to clone the repository:
  ```
  git clone https://github.com/OpenAADL/ocarina-build.git
  ```
- 
+
  This will ensure future update of the script in a seamless way.
- 
+
 ## Usage
 
 ```
@@ -50,6 +50,7 @@ Build-time options, options to be passed along with -b
 Scenarios, specific combination of parameters
  --scenario=<name> : run a specific scenario
 
- Valid names are coverage fresh-install nightly-build taste (see source code for details)
+ Valid names are coverage fresh-install nightly-build taste travis-ci
+ See source code for details.
  Note: this may overwrite other configuration parameters
 ```
