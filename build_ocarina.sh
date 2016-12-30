@@ -31,7 +31,7 @@
 ######################
 # script configuration
 
-root_script_dir="$(dirname "$0")"; cd "${root_script_dir}"; root_script_dir=$(pwd)
+root_script_dir="$(dirname "$0")"; cd "${root_script_dir}" || exit 1; root_script_dir=$(pwd)
 the_date=$(date +"%Y%m%d")
 tmp_dir="$HOME/tmp"; mkdir -p "$tmp_dir"
 is_error=$tmp_dir/build_ocarina_ERROR; rm -f "$is_error"
@@ -238,7 +238,7 @@ do_check_out() {
 	        try "git pull" "Updating runtime '${r}'"
 	        cd ..
 	    done
-	    cd ../..
+	    cd ../.. || exit 1
         fi
     fi
 }
