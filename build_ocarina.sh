@@ -102,6 +102,26 @@ package_ocarina_default="no"            # "yes" to package Ocarina
 test_ocarina_default="no"               # "yes" to run make check
 
 ###############################################################################
+# These two functions print log/error messages, with the FAILED/PASSED
+# colored and right align.
+
+log_msg() {
+    MSG="$1"
+    STATUS="[PASSED]"
+    let COL=$(tput cols)-8-${#MSG}-${#STATUS}
+
+    printf "%s\e[1;32m%${COL}s\e[0m\n" "${MSG}" "${STATUS}"
+}
+
+error_msg() {
+    MSG="$1"
+    STATUS="[FAILED]"
+    let COL=$(tput cols)-8-${#MSG}-${#STATUS}
+
+    printf "%s\e[1;33m%${COL}s\e[0m\n" "${MSG}" "${STATUS}"
+}
+
+###############################################################################
 # This function tries to do an action, if the action fails; it complains
 # by sending a report. It uses the following variables
 
@@ -130,12 +150,12 @@ try() {
     # If the execution succeded, exit normally, else, returns the log
 
     if [ ${return_code} -eq 0 ] ; then
-        echo "[`date +"%Y-%m-%d-%H:%M"`] ${try_msg}: PASSED" | tee -a ${final_report_body}
+        log_msg "[`date +"%Y-%m-%d-%H:%M"`] ${try_msg}" | tee -a ${final_report_body}
         rm -f ${try_report}
         return 0
     fi
 
-    echo "[`date +"%Y-%m-%d-%H:%M"`] ${try_msg}: FAILED" | tee -a ${final_report_body}
+    error_msg "[`date +"%Y-%m-%d-%H:%M"`] ${try_msg}" | tee -a ${final_report_body}
 
     # Set error
 
