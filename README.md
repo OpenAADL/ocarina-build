@@ -55,3 +55,7 @@ Scenarios, specific combination of parameters
  See source code for details.
  Note: this may overwrite other configuration parameters
 ```
+
+## Code quality
+
+Codeclimate: [![Issue Count](https://codeclimate.com/github/OpenAADL/ocarina-build/badges/issue_count.svg)](https://codeclimate.com/github/OpenAADL/ocarina-build)
