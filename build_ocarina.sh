@@ -76,10 +76,11 @@ include_runtimes="polyorb-hi-ada polyorb-hi-c aadlib" # Ocarina runtimes
 
 # Note: check Ocarina configure script for details
 
-#ocarina_doc=""                          # --enable-doc to build documentation
-ocarina_debug=""                        # --enable-debug to enable debug
-ocarina_coverage=""                     # --enable-gcov to enable coverage
-ocarina_python=""                       # --enable-python to build Python bindings
+ocarina_doc=""                        # --enable-doc to build documentation
+ocarina_debug=""                      # --enable-debug to enable debug
+ocarina_coverage=""                   # --enable-gcov to enable coverage
+ocarina_python=""                     # --enable-python to build Python bindings
+ocarina_flags=""                      # combination of the above
 
 # Default installation prefix, can be overidden by the --prefix parameter
 prefix_default=${root_script_dir}/ocarina_repos_install
@@ -253,7 +254,7 @@ do_configure_ocarina() {
     try "./support/reconfig" "Reconfiguring (Ocarina)"
 
     # Configuring
-    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} ${ocarina_python} --prefix=${prefix}" \
+    try "./configure ${target_specific} ${ocarina_flags} --prefix=${prefix}" \
         "First configure (Ocarina)"
 
 }
@@ -268,7 +269,7 @@ do_build_ocarina() {
     try "./support/reconfig" "Reconfiguring (Ocarina)"
 
     # Configuring
-    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} ${ocarina_python} --prefix=${prefix}" \
+    try "./configure ${target_specific} ${ocarina_flags} --prefix=${prefix}" \
         "First configure (Ocarina)"
 
     # Building
@@ -305,7 +306,7 @@ do_packaging() {
     try "./support/reconfig" "Reconfiguring (Ocarina)"
 
     # Configuring
-    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} ${ocarina_python} --prefix=${prefix}" \
+    try "./configure ${target_specific} ${ocarina_flags} --prefix=${prefix}" \
         "First configure (Ocarina)"
 
     # Clean up old archives and build tree
@@ -316,7 +317,7 @@ do_packaging() {
 
     # Re configuring (since we've done 'make distclean')
 
-    try "./configure ${target_specific} ${ocarina_debug} ${ocarina_coverage} ${ocarina_python} --prefix=${prefix}" \
+    try "./configure ${target_specific} ${ocarina_flags} --prefix=${prefix}" \
         "Second configure (Ocarina)"
 
     # Packaging and testing the package
@@ -416,6 +417,7 @@ usage() {
     echo ""
     echo "Build-time options, options to be passed along with -b"
     echo " --prefix=<dir>     : install ocarina in <dir>"
+    echo " --enable-doc       : enable building the documentation"
     echo " --enable-gcov      : enable coverage during ocarina build"
     echo " --enable-debug     : enable debug during ocarina build"
     echo " --enable-python    : enable Python bindings"
@@ -446,6 +448,7 @@ while test $# -gt 0; do
       --build-info) build_info="yes" ;;
       -c | --configure) configure_ocarina="yes" ;;
       -d) debug="yes" ;;
+      --enable-doc) ocarina_debug="--enable-doc" ;;
       --enable-debug) ocarina_debug="--enable-debug" ;;
       --enable-gcov) ocarina_coverage="--enable-gcov" ;;
       --enable-python) ocarina_python="--enable-python --enable-shared";;
@@ -514,6 +517,8 @@ case $scenario in
 esac
 fi
 
+ocarina_flags="${ocarina_doc} ${ocarina_debug} ${ocarina_coverage} ${ocarina_python}"
+
 # 2) consolidate configuration parameters
 
 : ${build_info=$build_info_default}
@@ -545,7 +550,17 @@ fi
 # 3) general execution scheme
 
 if test x"${build_info}" = x"yes"; then
-    echo "OS:       " "$(uname -msr)"
+    if [ -f /etc/os-release ]
+    then
+        # For (recent) Linux platform, returns the name of the
+        # distribution + CPU architecture
+        . /etc/os-release
+        echo "OS:       " "$PRETTY_NAME" "$(uname -m)"
+    else
+        # For other OS, return uname information
+        echo "OS:       " "$(uname -msr)"
+    fi
+
     echo "Compiler: " "$(gnatmake --version | head -n 1)"
 fi
 
