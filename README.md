@@ -1,6 +1,6 @@
 # build_ocarina.sh [![Issue Count](https://codeclimate.com/github/OpenAADL/ocarina-build/badges/issue_count.svg)](https://codeclimate.com/github/OpenAADL/ocarina-build) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## About
+## About [![GitHub release](https://img.shields.io/github/release/OpenAADL/ocarina-build.svg)]()
 
 The `build_ocarina.sh` script is a helper program to get source code,
 compile, package and test Ocarina on all supported platforms. It relies
