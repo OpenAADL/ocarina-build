@@ -43,6 +43,7 @@ Update-time options, options to be passed along with -u
 
 Build-time options, options to be passed along with -b
  --prefix=<dir>     : install ocarina in <dir>
+ --enable-doc       : enable building the documentation
  --enable-gcov      : enable coverage during ocarina build
  --enable-debug     : enable debug during ocarina build
  --enable-python    : enable Python bindings
