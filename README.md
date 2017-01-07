@@ -28,6 +28,7 @@ Usage: ./build_ocarina.sh [switches]
 
 General commands
  -h | --help        : print usage
+ --version          : return script version, as a git hash
  --self-update      : update this script
 
 Script commands

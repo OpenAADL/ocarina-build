@@ -402,6 +402,7 @@ usage() {
     echo ""
     echo "General commands"
     echo " -h | --help        : print usage"
+    echo " --version          : return script version, as a git hash"
     echo " --self-update      : update this script"
     echo ""
     echo "Script commands"
@@ -461,6 +462,7 @@ while test $# -gt 0; do
       --remote=*) repository=${optarg};;
       --scenario=*) scenario=${optarg};;
       --self-update) self_update="yes" ;;
+      --version) git log -1 --pretty=format:%h  && exit 1 ;;
       *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
   esac
   shift
