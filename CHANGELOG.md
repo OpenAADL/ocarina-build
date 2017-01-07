@@ -2,15 +2,9 @@
 
 ## [Unreleased](https://github.com/OpenAADL/ocarina-build/tree/HEAD)
 
-[Full Changelog](https://github.com/OpenAADL/ocarina-build/compare/2017.1...HEAD)
-
 **Implemented enhancements:**
 
 - Add option to build doc [\#13](https://github.com/OpenAADL/ocarina-build/issues/13)
-
-## [2017.1](https://github.com/OpenAADL/ocarina-build/tree/2017.1) (2017-01-03)
-**Implemented enhancements:**
-
 - Use a shell script sanitizer [\#12](https://github.com/OpenAADL/ocarina-build/issues/12)
 - Colored and right-aligned PASSED/FAILED message [\#11](https://github.com/OpenAADL/ocarina-build/issues/11)
 - Add  flag to display OS/Compiler version [\#10](https://github.com/OpenAADL/ocarina-build/issues/10)
