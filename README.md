@@ -3,11 +3,11 @@
 ## About [![GitHub release](https://img.shields.io/github/release/OpenAADL/ocarina-build.svg)](https://github.com/OpenAADL/ocarina-build/releases)
 
 The `build_ocarina.sh` script is a helper program to get source code,
-compile, package and test Ocarina on all supported platforms. It relies
+compile, package and test [Ocarina](https://github.com/openaadl/ocarina) on all supported platforms. It relies
 on shell constructs to coordinate various activities:
 
-- fetch Ocarina source, with its runtimes PolyORB-HI/Ada and
-  PolyORB-HI/C, and the AADLib library
+- fetch Ocarina source, with its runtimes [PolyORB-HI/Ada](https://github.com/OpenAADL/polyorb-hi-ada) and
+  [PolyORB-HI/C](https://github.com/OpenAADL/polyorb-hi-c), and the [AADLib](https://github.com/OpenAADL/AADLib) library
 - compile Ocarina, and install it in a local directory
 - run Ocarina testsuites, and eventually collect coverage metrics
 - package Ocarina and its runtime
