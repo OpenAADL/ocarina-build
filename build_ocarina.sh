@@ -397,6 +397,21 @@ do_build_from_tarball() {
 }
 
 ###############################################################################
+# Install crontab to run nightly-build scenario
+
+do_install_crontab() {
+    # See
+    # http://stackoverflow.com/questions/878600/how-to-create-cronjob-using-bash
+    # for details on this set of commands
+
+    command="$root_script_dir/build_ocarina.sh --selfupdate && $root_script_dir/build_ocarina.sh --scenario=nightly-build"
+    job="0 0 * * 0 $command"
+
+    cat <(fgrep -i -v "$command" <(crontab -l)) <(echo "$job") | crontab -
+}
+
+###############################################################################
+# Print usage
 usage() {
     echo "Usage: $0 [switches]"
     echo ""
@@ -404,6 +419,7 @@ usage() {
     echo " -h | --help        : print usage"
     echo " --version          : return script version, as a git hash"
     echo " --self-update      : update this script"
+    echo " --install_crontab  : install crontab, then exit"
     echo ""
     echo "Script commands"
     echo " -c | --configure   : configure Ocarina source directory"
@@ -454,14 +470,15 @@ while test $# -gt 0; do
       --enable-gcov) ocarina_coverage="--enable-gcov" ;;
       --enable-python) ocarina_python="--enable-python --enable-shared";;
       --help | -h) usage 1>&2 && exit 1 ;;
+      --install_crontab) do_install_crontab && exit 1 ;;
       --package | -p) package_ocarina="yes" ;;
-      --reset | -s) build_ocarina_from_scratch="yes" ;;
-      --runt-test | -t) test_ocarina="yes" ;;
-      --update | -u) update_ocarina="yes" ;;
       --prefix=*) prefix=${optarg};;
       --remote=*) repository=${optarg};;
+      --reset | -s) build_ocarina_from_scratch="yes" ;;
+      --runt-test | -t) test_ocarina="yes" ;;
       --scenario=*) scenario=${optarg};;
       --self-update) self_update="yes" ;;
+      --update | -u) update_ocarina="yes" ;;
       --version) git log -1 --pretty=format:%h  && exit 1 ;;
       *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
   esac

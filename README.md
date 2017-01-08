@@ -30,6 +30,7 @@ General commands
  -h | --help        : print usage
  --version          : return script version, as a git hash
  --self-update      : update this script
+ --install_crontab  : install crontab, then exit
 
 Script commands
  -c | --configure   : configure Ocarina source directory
