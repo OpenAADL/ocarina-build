@@ -88,6 +88,7 @@ ocarina_dist_install=${root_script_dir}/ocarina_dist_install
 
 # Defaut repository, can be overriden by the --remote parameter
 repository_default="https://github.com/OpenAADL"
+git_tag=""
 
 #############################
 # build_ocarina configuration
@@ -219,10 +220,19 @@ do_check_out() {
 
         cd ocarina || exit 1
 
+        if test ! -z "${git_tag}"; then
+            try "git checkout ${git_tag} -b ${git_tag}" "Fetching tag '${git_tag}'"
+        fi;
+
         # Check out the requested runtimes
 
         if test ! -z "${include_runtimes}"; then
-	    try "./support/get_runtimes.sh --root_url=${repository} ${include_runtimes}" \
+            tag_option=""
+            if test ! -z "${git_tag}"; then
+                tag_option="--tag=${git_tag}"
+            fi;
+
+	    try "./support/get_runtimes.sh --root_url=${repository} ${tag_option} ${include_runtimes}" \
 	        "Fetching runtimes '${include_runtimes}'"
         fi;
 
@@ -431,6 +441,7 @@ usage() {
     echo "Update-time options, options to be passed along with -u"
     echo " -s | --reset       : reset source directory prior to update"
     echo " --remote=<URL>     : Set URL of the Ocarina git repository"
+    echo " --tag=<tag>        : Fetch a given tag"
     echo ""
     echo "Build-time options, options to be passed along with -b"
     echo " --prefix=<dir>     : install ocarina in <dir>"
@@ -478,6 +489,7 @@ while test $# -gt 0; do
       --runt-test | -t) test_ocarina="yes" ;;
       --scenario=*) scenario=${optarg};;
       --self-update) self_update="yes" ;;
+      --tag=*) git_tag=${optarg} ;;
       --update | -u) update_ocarina="yes" ;;
       --version) git log -1 --pretty=format:%h  && exit 1 ;;
       *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
