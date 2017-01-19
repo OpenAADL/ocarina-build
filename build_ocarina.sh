@@ -509,13 +509,17 @@ case $scenario in
         ;;
 
     travis-ci)
-        # In this scenario, we do a fresh install of Ocarina, the user
-        # may override the installation prefix using --prefix
+        # For travis-ci, we
+        # 1) build Ocarina with coverage activated
+        # 2) package Ocarina, to eventually later upload release
+        ocarina_debug="--enable-debug"
+        ocarina_coverage="--enable-gcov"
         build_info="yes"
         build_ocarina_from_scratch="yes"
         update_ocarina="yes"
         build_ocarina="yes"
         test_ocarina="yes"
+        package_ocarina="yes"
         ;;
 
     nightly-build)
