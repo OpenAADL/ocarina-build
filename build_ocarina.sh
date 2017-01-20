@@ -97,6 +97,7 @@ build_info_default="no"                 # "yes" to print build info
 debug_default="no"                      # "yes" to print debugging traces
 self_update_default="no"                # "yes" to update the current script then exit
 update_ocarina_default="no"             # "yes" to update the source directory
+upload_ocarina_default="no"             # "yes" to upload Ocarina archives
 build_ocarina_from_scratch_default="no" # "yes" to reload source directory
 build_ocarina_default="no"              # "yes" to build Ocarina
 configure_ocarina_default="no"          # "yes" to build Ocarina
@@ -421,6 +422,15 @@ do_install_crontab() {
 }
 
 ###############################################################################
+# Upload Ocarina archive
+
+do_upload() {
+    sftp "${USER}"@"${URI}":"${TARGET_DIR}" <<< $'put ./ocarina/ocarina-*.tar.gz'
+    sftp "${USER}"@"${URI}":"${TARGET_DIR}" <<< $'put ./ocarina/ocarina-*.tgz'
+
+}
+
+###############################################################################
 # Print usage
 usage() {
     echo "Usage: $0 [switches]"
@@ -437,6 +447,7 @@ usage() {
     echo " -b | --build       : configure, build and install Ocarina"
     echo " -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib"
     echo " -p | --package     : package ocarina distribution as tarball"
+    echo " --upload           : upload archives, see source code for details"
     echo ""
     echo "Update-time options, options to be passed along with -u"
     echo " -s | --reset       : reset source directory prior to update"
@@ -491,6 +502,7 @@ while test $# -gt 0; do
       --self-update) self_update="yes" ;;
       --tag=*) git_tag=${optarg} ;;
       --update | -u) update_ocarina="yes" ;;
+      --upload) upload_ocarina="yes";;
       --version) git log -1 --pretty=format:%h  && exit 1 ;;
       *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
   esac
@@ -557,6 +569,7 @@ ocarina_flags="${ocarina_doc} ${ocarina_debug} ${ocarina_coverage} ${ocarina_pyt
 : ${build_info=$build_info_default}
 : ${build_ocarina_from_scratch=$build_ocarina_from_scratch_default}
 : ${update_ocarina=$update_ocarina_default}
+: ${upload_ocarina=$upload_ocarina_default}
 : ${configure_ocarina=$configure_ocarina_default}
 : ${self_update=$self_update_default}
 : ${debug=$debug_default}
@@ -620,6 +633,10 @@ fi
 if test x"${package_ocarina}" = x"yes"; then
     do_packaging
     do_build_from_tarball
+fi
+
+if test x"${upload_ocarina}" = x"yes"; then
+    do_upload
 fi
 
 exit 0
