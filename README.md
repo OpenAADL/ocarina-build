@@ -59,3 +59,8 @@ Scenarios, specific combination of parameters
  See source code for details.
  Note: this may overwrite other configuration parameters
 ```
+
+## Authors
+
+* Jerome Hugues, maintainer
+* Bechir Zalila
