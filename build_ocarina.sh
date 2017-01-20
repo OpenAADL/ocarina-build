@@ -393,7 +393,7 @@ do_build_from_tarball() {
     bin_archive="${bin_dir}${bin_suffix}"
     rm -rf "${bin_dir}"
     mkdir "${bin_dir}"
-    cp -rf "${ocarina_dist_install}/*" "${bin_dir}/"
+    cp -rf "${ocarina_dist_install}"/* "${bin_dir}/"
 
     # Remove any previous archive
     try "rm -rf ocarina-*${bin_suffix}" "DIST: remove old archives"
