@@ -38,6 +38,7 @@ Script commands
  -b | --build       : configure, build and install Ocarina
  -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib
  -p | --package     : package ocarina distribution as tarball
+ --upload           : upload archives, see source code for details
 
 Update-time options, options to be passed along with -u
  -s | --reset       : reset source directory prior to update
