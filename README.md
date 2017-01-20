@@ -11,6 +11,7 @@ on shell constructs to coordinate various activities:
 - compile Ocarina, and install it in a local directory
 - run Ocarina testsuites, and eventually collect coverage metrics
 - package Ocarina and its runtime
+- upload archives
 
 ## Installation
 
@@ -63,4 +64,4 @@ Scenarios, specific combination of parameters
 ## Authors
 
 * Jerome Hugues, maintainer
-* Bechir Zalila
+* Bechir Zalila, original version
