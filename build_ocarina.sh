@@ -455,7 +455,7 @@ usage() {
     echo " --build-info       : display information on build environment"
     echo ""
     echo "Scenarios, specific combination of parameters"
-    echo " --scenario=<name> : run a specific scenario"
+    echo " --scenario=<name>  : run a specific scenario"
     echo ""
     echo " Valid names are coverage fresh-install nightly-build taste travis-ci"
     echo " See source code for details on actual parameters"

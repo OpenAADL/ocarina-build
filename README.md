@@ -54,7 +54,7 @@ Build-time options, options to be passed along with -b
  --build-info       : display information on build environment
 
 Scenarios, specific combination of parameters
- --scenario=<name> : run a specific scenario
+ --scenario=<name>  : run a specific scenario
 
  Valid names are coverage fresh-install nightly-build taste travis-ci
  See source code for details.
