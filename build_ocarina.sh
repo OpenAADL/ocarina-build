@@ -316,20 +316,12 @@ do_packaging() {
     # Bootstrap the build
     try "./support/reconfig" "Reconfiguring (Ocarina)"
 
-    # Configuring
-    try "./configure ${target_specific} ${ocarina_flags} --prefix=${prefix}" \
-        "First configure (Ocarina)"
-
     # Clean up old archives and build tree
     old_archive="$(ls "ocarina-*${src_suffix}" 2> /dev/null)"
     rm -f "${old_archive}"
 
-    try "${GNU_MAKE} distclean" "${GNU_MAKE} distclean (Ocarina)"
-
-    # Re configuring (since we've done 'make distclean')
-
     try "./configure ${target_specific} ${ocarina_flags} --prefix=${prefix}" \
-        "Second configure (Ocarina)"
+        "Configure for dist (Ocarina)"
 
     # Packaging and testing the package
 
@@ -530,6 +522,7 @@ case $scenario in
         update_ocarina="yes"
         build_ocarina="yes"
         test_ocarina="yes"
+        package_ocarina="yes"
         ;;
 
     nightly-build)
