@@ -1,9 +1,21 @@
 # Change Log
 
-## [2017.1](https://github.com/OpenAADL/ocarina-build/tree/2017.1) (2017-01-20)
+## [Unreleased](https://github.com/OpenAADL/ocarina-build/tree/HEAD)
+
+[Full Changelog](https://github.com/OpenAADL/ocarina-build/compare/2017.1...HEAD)
+
 **Implemented enhancements:**
 
 - Add flag to upload binary [\#16](https://github.com/OpenAADL/ocarina-build/issues/16)
+
+**Fixed bugs:**
+
+- travis-ci should support packaging + code coverage [\#19](https://github.com/OpenAADL/ocarina-build/issues/19)
+- Upload command broken [\#18](https://github.com/OpenAADL/ocarina-build/issues/18)
+
+## [2017.1](https://github.com/OpenAADL/ocarina-build/tree/2017.1) (2017-01-20)
+**Implemented enhancements:**
+
 - Travis-CI: use coverage + build package [\#17](https://github.com/OpenAADL/ocarina-build/issues/17)
 - Add flag to install crontab for scenario nightly-build [\#15](https://github.com/OpenAADL/ocarina-build/issues/15)
 - Add a `--version` option [\#14](https://github.com/OpenAADL/ocarina-build/issues/14)
@@ -23,3 +35,4 @@
 **Closed issues:**
 
 - Build failure in Ubuntu 15.04 [\#2](https://github.com/OpenAADL/ocarina-build/issues/2)
+
