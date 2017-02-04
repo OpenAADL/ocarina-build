@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Add spinner wheel  [\#21](https://github.com/OpenAADL/ocarina-build/issues/21)
 - Add flag to upload binary [\#16](https://github.com/OpenAADL/ocarina-build/issues/16)
 
 **Fixed bugs:**
