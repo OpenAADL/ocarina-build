@@ -125,6 +125,27 @@ error_msg() {
 }
 
 ###############################################################################
+# Small spinner wheel, from
+# http://stackoverflow.com/questions/12498304/using-bash-to-display-a-progress-working-indicator
+# this ensures continuous activity being on display, and prevent
+# timeout, e.g. from Travis-CI
+
+spinner()
+{
+    local pid=$!
+    local delay=0.75
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf " [%c]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
+
+###############################################################################
 # This function tries to do an action, if the action fails; it complains
 # by sending a report. It uses the following variables
 
@@ -146,7 +167,7 @@ try() {
     try_msg="$2"
     try_report="${tmp_dir}/report.$$"
 
-    ${try_cmd_and_args} >> "${try_report}" 2>&1
+    (${try_cmd_and_args} >> "${try_report}" 2>&1) & spinner
 
     return_code=$?
 
