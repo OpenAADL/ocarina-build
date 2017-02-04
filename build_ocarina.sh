@@ -132,8 +132,8 @@ error_msg() {
 
 spinner()
 {
-    local pid=$!
-    local delay=0.75
+    local pid=$$
+    local delay=5
     local spinstr='|/-\'
     while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
         local temp=${spinstr#?}
@@ -167,7 +167,7 @@ try() {
     try_msg="$2"
     try_report="${tmp_dir}/report.$$"
 
-    (${try_cmd_and_args} >> "${try_report}" 2>&1) & spinner
+    ${try_cmd_and_args} >> "${try_report}" 2>&1
 
     return_code=$?
 
@@ -623,6 +623,8 @@ if test x"${build_info}" = x"yes"; then
 
     echo "Compiler: " "$(gnatmake --version | head -n 1)"
 fi
+
+spinner&
 
 if test x"${self_update}" = x"yes"; then
     do_self_update
