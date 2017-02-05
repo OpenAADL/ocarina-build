@@ -58,7 +58,9 @@ Scenarios, specific combination of parameters
 
  Valid names are coverage fresh-install nightly-build taste travis-ci
  See source code for details.
- Note: this may overwrite other configuration parameters
+
+ Note: a default scenario can be passed using the OCARINA_SCENARIO
+ environment variable
 ```
 
 ## Authors

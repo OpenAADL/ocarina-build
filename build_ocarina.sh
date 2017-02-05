@@ -480,12 +480,17 @@ usage() {
     echo ""
     echo " Valid names are coverage fresh-install nightly-build taste travis-ci"
     echo " See source code for details on actual parameters"
+    echo ""
+    echo " Note: a default scenario can be passed using the OCARINA_SCENARIO"
+    echo " environment variable"
 }
 
 ###############################################################################
 # Main function starts here
 
 # 1) parse command line parameters
+
+: "${scenario:=$OCARINA_SCENARIO}"
 
 while test $# -gt 0; do
   case "$1" in
