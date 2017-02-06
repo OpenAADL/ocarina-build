@@ -101,6 +101,7 @@ upload_ocarina_default="no"             # "yes" to upload Ocarina archives
 build_ocarina_from_scratch_default="no" # "yes" to reload source directory
 build_ocarina_default="no"              # "yes" to build Ocarina
 configure_ocarina_default="no"          # "yes" to build Ocarina
+distclean_ocarina_default="no"          # "yes" to distclean Ocarina
 package_ocarina_default="no"            # "yes" to package Ocarina
 test_ocarina_default="no"               # "yes" to run make check
 
@@ -421,6 +422,17 @@ do_build_from_tarball() {
 }
 
 ###############################################################################
+# Run distclean in Ocarina build dir
+
+do_distclean() {
+    cd "${root_script_dir}/ocarina" || exit 1
+
+    # Clean up
+    try "${GNU_MAKE} distclean" "DIST: ${GNU_MAKE} distclean (Ocarina)"
+    cd ..
+}
+
+###############################################################################
 # Install crontab to run nightly-build scenario
 
 do_install_crontab() {
@@ -453,6 +465,7 @@ usage() {
     echo " --version          : return script version, as a git hash"
     echo " --self-update      : update this script"
     echo " --install_crontab  : install crontab, then exit"
+    echo " --purge            : delete source and build directories"
     echo ""
     echo "Script commands"
     echo " -c | --configure   : configure Ocarina source directory"
@@ -461,6 +474,7 @@ usage() {
     echo " -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib"
     echo " -p | --package     : package ocarina distribution as tarball"
     echo " --upload           : upload archives, see source code for details"
+    echo " --distclean        : distclean Ocarina build directory"
     echo ""
     echo "Update-time options, options to be passed along with -u"
     echo " -s | --reset       : reset source directory prior to update"
@@ -505,6 +519,7 @@ while test $# -gt 0; do
       --build-info) build_info="yes" ;;
       -c | --configure) configure_ocarina="yes" ;;
       -d) debug="yes" ;;
+      --distclean) distclean_ocarina="yes";;
       --enable-doc) ocarina_debug="--enable-doc" ;;
       --enable-debug) ocarina_debug="--enable-debug" ;;
       --enable-gcov) ocarina_coverage="--enable-gcov" ;;
@@ -513,6 +528,7 @@ while test $# -gt 0; do
       --install_crontab) do_install_crontab && exit 1 ;;
       --package | -p) package_ocarina="yes" ;;
       --prefix=*) prefix=${optarg};;
+      --purge) rm -rf "${ocarina_dist_install}" ocarina && exit 1;;
       --remote=*) repository=${optarg};;
       --reset | -s) build_ocarina_from_scratch="yes" ;;
       --run-test | -t) test_ocarina="yes" ;;
@@ -590,6 +606,7 @@ ocarina_flags="${ocarina_doc} ${ocarina_debug} ${ocarina_coverage} ${ocarina_pyt
 : ${update_ocarina=$update_ocarina_default}
 : ${upload_ocarina=$upload_ocarina_default}
 : ${configure_ocarina=$configure_ocarina_default}
+: ${distclean_ocarina=$distclean_ocarina_default}
 : ${self_update=$self_update_default}
 : ${debug=$debug_default}
 : ${build_ocarina=$build_ocarina_default}
@@ -641,6 +658,10 @@ fi
 
 if test x"${configure_ocarina}" = x"yes"; then
     do_configure_ocarina
+fi
+
+if test x"${distclean_ocarina}" = x"yes"; then
+    do_distclean
 fi
 
 if test x"${build_ocarina}" = x"yes"; then
