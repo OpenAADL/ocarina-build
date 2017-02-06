@@ -515,7 +515,7 @@ while test $# -gt 0; do
       --prefix=*) prefix=${optarg};;
       --remote=*) repository=${optarg};;
       --reset | -s) build_ocarina_from_scratch="yes" ;;
-      --runt-test | -t) test_ocarina="yes" ;;
+      --run-test | -t) test_ocarina="yes" ;;
       --scenario=*) scenario=${optarg};;
       --self-update) self_update="yes" ;;
       --tag=*) git_tag=${optarg} ;;
