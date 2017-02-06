@@ -32,6 +32,7 @@ General commands
  --version          : return script version, as a git hash
  --self-update      : update this script
  --install_crontab  : install crontab, then exit
+ --purge            : delete source and build directories
 
 Script commands
  -c | --configure   : configure Ocarina source directory
@@ -40,6 +41,7 @@ Script commands
  -t | --run-test    : run Ocarina testsuite, plus runtimes and AADLib
  -p | --package     : package ocarina distribution as tarball
  --upload           : upload archives, see source code for details
+ --distclean        : distclean Ocarina build directory
 
 Update-time options, options to be passed along with -u
  -s | --reset       : reset source directory prior to update
