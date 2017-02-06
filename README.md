@@ -22,6 +22,20 @@ The preferred way to install this script is simply to clone the repository:
 
  This will ensure future update of the script in a seamless way.
 
+## Quick start
+
+To build a fresh copy of Ocarina and install it in `$PWD/ocarina_install`, do
+
+ ```
+./build_ocarina.sh --reset --update --configure --build --prefix=$PWD/ocarina_install
+ ```
+
+or simply
+
+ ```
+./build_ocarina.sh --scenario=fresh-install --prefix=$PWD/ocarina_install
+ ```
+
 ## Usage
 
 ```
