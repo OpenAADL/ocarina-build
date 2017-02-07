@@ -6,11 +6,15 @@
 
 **Implemented enhancements:**
 
+- Add commands to clean workspace [\#24](https://github.com/OpenAADL/ocarina-build/issues/24)
+- Add command to create a GitHub release [\#22](https://github.com/OpenAADL/ocarina-build/issues/22)
 - Add spinner wheel  [\#21](https://github.com/OpenAADL/ocarina-build/issues/21)
+- Default scenario [\#20](https://github.com/OpenAADL/ocarina-build/issues/20)
 - Add flag to upload binary [\#16](https://github.com/OpenAADL/ocarina-build/issues/16)
 
 **Fixed bugs:**
 
+- Typo in --run-test [\#23](https://github.com/OpenAADL/ocarina-build/issues/23)
 - travis-ci should support packaging + code coverage [\#19](https://github.com/OpenAADL/ocarina-build/issues/19)
 - Upload command broken [\#18](https://github.com/OpenAADL/ocarina-build/issues/18)
 
