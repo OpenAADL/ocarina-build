@@ -170,7 +170,7 @@ try() {
     try_msg="$2"
     try_report="${tmp_dir}/report.$$"
 
-    printf "[$(date +"%Y-%m-%d-%H:%M")] ${try_msg}   "
+    printf "[$(date +"%Y-%m-%d-%H:%M")] %s" "${try_msg}"
 
     ( ${try_cmd_and_args} >> "${try_report}" 2>&1 ) & spinner
 
@@ -319,11 +319,10 @@ do_build_ocarina() {
 
     try "${GNU_MAKE} install" "Doing '${GNU_MAKE} install' (Ocarina)"
 
-    echo "Ocarina Installation is now complete !"
-    echo "Note: you must add"
+    echo "Ocarina installation is now complete !"
+    echo "Note: you may want to add"
     echo " ${prefix}/bin to PATH"
     echo " ${prefix}/lib to LD_LIBRARY_PATH"
-    echo "to complete the installation of Ocarina"
 }
 
 ###############################################################################
