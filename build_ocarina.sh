@@ -89,6 +89,7 @@ ocarina_dist_install=${root_script_dir}/ocarina_dist_install
 # Defaut repository, can be overriden by the --remote parameter
 repository_default="https://github.com/OpenAADL"
 git_tag=""
+release_tag=""
 
 #############################
 # build_ocarina configuration
@@ -465,6 +466,22 @@ do_upload() {
 }
 
 ###############################################################################
+# Push a release
+# Note: we use GitHub + Travis-CI for pushing a release archive to GitHub
+
+do_release() {
+    cd "${root_script_dir}/ocarina" || exit 1
+
+    echo "Preparing release for $release_tag"
+
+    git tag -d "v$release_tag"
+    git push origin :refs/tags/"v$release_tag"
+    git tag -a "v$release_tag" -m "Ocarina $release_tag"
+    git push origin "v$release_tag"
+    git push origin master
+}
+
+###############################################################################
 # Print usage
 usage() {
     echo "Usage: $0 [switches]"
@@ -484,6 +501,7 @@ usage() {
     echo " -p | --package     : package ocarina distribution as tarball"
     echo " --upload           : upload archives, see source code for details"
     echo " --distclean        : distclean Ocarina build directory"
+    echo " --release          : release Ocarina on GitHub"
     echo ""
     echo "Update-time options, options to be passed along with -u"
     echo " -s | --reset       : reset source directory prior to update"
@@ -539,6 +557,7 @@ while test $# -gt 0; do
       --prefix=*) prefix=${optarg};;
       --purge) rm -rf "${ocarina_dist_install}" ocarina && exit 1;;
       --remote=*) repository=${optarg};;
+      --release=*) (release_tag=${optarg} ; do_release) && exit 1;;
       --reset | -s) build_ocarina_from_scratch="yes" ;;
       --run-test | -t) test_ocarina="yes" ;;
       --scenario=*) scenario=${optarg};;

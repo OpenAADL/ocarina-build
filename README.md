@@ -56,6 +56,7 @@ Script commands
  -p | --package     : package ocarina distribution as tarball
  --upload           : upload archives, see source code for details
  --distclean        : distclean Ocarina build directory
+ --release          : release Ocarina on GitHub
 
 Update-time options, options to be passed along with -u
  -s | --reset       : reset source directory prior to update
