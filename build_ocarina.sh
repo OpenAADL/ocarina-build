@@ -318,6 +318,12 @@ do_build_ocarina() {
     fi
 
     try "${GNU_MAKE} install" "Doing '${GNU_MAKE} install' (Ocarina)"
+
+    echo "Ocarina Installation is now complete !"
+    echo "Note: you must add"
+    echo " ${prefix}/bin to PATH"
+    echo " ${prefix}/lib to LD_LIBRARY_PATH"
+    echo "to complete the installation of Ocarina"
 }
 
 ###############################################################################
