@@ -114,7 +114,7 @@ log_msg() {
     STATUS="[PASSED]"
     let COL=$(tput cols)-8-${#MSG}-${#STATUS}
 
-    printf "%s\e[1;32m%${COL}s\e[0m\n" "${MSG}" "${STATUS}"
+    printf "%s\e[1;32m%${COL}s\e[0m\n" "" "${STATUS}"
 }
 
 error_msg() {
@@ -133,8 +133,10 @@ error_msg() {
 
 spinner()
 {
-    local pid=$$
-    local delay=5
+    local pid=$!
+    # PID of the previous command launched in background
+
+    local delay=.75
     local spinstr='|/-\'
     while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
         local temp=${spinstr#?}
@@ -168,7 +170,9 @@ try() {
     try_msg="$2"
     try_report="${tmp_dir}/report.$$"
 
-    ${try_cmd_and_args} >> "${try_report}" 2>&1
+    printf "[$(date +"%Y-%m-%d-%H:%M")] ${try_msg}   "
+
+    ( ${try_cmd_and_args} >> "${try_report}" 2>&1 ) & spinner
 
     return_code=$?
 
@@ -645,8 +649,6 @@ if test x"${build_info}" = x"yes"; then
 
     echo "Compiler: " "$(gnatmake --version | head -n 1)"
 fi
-
-spinner&
 
 if test x"${self_update}" = x"yes"; then
     do_self_update
