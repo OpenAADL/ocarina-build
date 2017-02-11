@@ -132,8 +132,7 @@ error_msg() {
 # this ensures continuous activity being on display, and prevent
 # timeout, e.g. from Travis-CI
 
-spinner()
-{
+spinner() {
     local pid=$!
     # PID of the previous command launched in background
 
@@ -371,7 +370,6 @@ do_packaging() {
     echo "  => Source archive ready:" "${src_archive_name}"
 }
 
-
 ###############################################################################
 # Build the binary package for the Ocarina suite
 
@@ -379,6 +377,7 @@ do_self_update() {
      try "git pull origin master" "Self updating"
 
 }
+
 ###############################################################################
 # Build the binary package for the Ocarina suite
 
