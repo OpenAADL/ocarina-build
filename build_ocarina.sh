@@ -671,6 +671,8 @@ if test x"${build_info}" = x"yes"; then
     fi
 
     echo "Compiler: " "$(gnatmake --version | head -n 1)"
+    echo "autoconf: " "$(autoconf --version | head -n 1)"
+    echo "automake: " "$(automake --version | head -n 1)"
 fi
 
 if test x"${self_update}" = x"yes"; then
