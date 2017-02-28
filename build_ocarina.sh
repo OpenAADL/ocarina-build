@@ -90,6 +90,7 @@ ocarina_dist_install=${root_script_dir}/ocarina_dist_install
 repository_default="https://github.com/OpenAADL"
 git_tag=""
 release_tag=""
+verbose=""
 
 #############################
 # build_ocarina configuration
@@ -146,6 +147,8 @@ spinner() {
         printf "\b\b\b\b\b\b"
     done
     printf "    \b\b\b\b"
+    wait $pid
+    return $?
 }
 
 ###############################################################################
@@ -173,8 +176,13 @@ try() {
     printf "[$(date +"%Y-%m-%d-%H:%M")] %s" "${try_msg}"
 
     ( ${try_cmd_and_args} >> "${try_report}" 2>&1 ) & spinner
-
     return_code=$?
+
+    # Print full log in case of verbose mode
+
+    if test x"${verbose}" = x"yes"; then
+        cat "${try_report}"
+    fi
 
     # If the execution succeded, exit normally, else, returns the log
 
@@ -191,7 +199,6 @@ try() {
     touch "${is_error}"
 
     # Display the report message and abort
-
     cat "${try_report}"
     exit 1
 }
@@ -491,6 +498,7 @@ usage() {
     echo " --self-update      : update this script"
     echo " --install_crontab  : install crontab, then exit"
     echo " --purge            : delete source and build directories"
+    echo " --verbose          : return full log of each action"
     echo ""
     echo "Script commands"
     echo " -c | --configure   : configure Ocarina source directory"
@@ -565,6 +573,7 @@ while test $# -gt 0; do
       --update | -u) update_ocarina="yes" ;;
       --upload) upload_ocarina="yes";;
       --version) git log -1 --pretty=format:%h  && exit 1 ;;
+      --verbose) verbose="yes";;
       *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
   esac
   shift
@@ -592,6 +601,7 @@ case $scenario in
         build_ocarina="yes"
         test_ocarina="yes"
         package_ocarina="yes"
+        verbose="yes"
         ;;
 
     nightly-build)

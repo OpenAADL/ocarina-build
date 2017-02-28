@@ -47,6 +47,7 @@ General commands
  --self-update      : update this script
  --install_crontab  : install crontab, then exit
  --purge            : delete source and build directories
+ --verbose          : return full log of each action
 
 Script commands
  -c | --configure   : configure Ocarina source directory
