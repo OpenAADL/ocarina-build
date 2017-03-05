@@ -91,6 +91,7 @@ repository_default="https://github.com/OpenAADL"
 git_tag=""
 release_tag=""
 verbose=""
+force_build=""
 
 #############################
 # build_ocarina configuration
@@ -309,6 +310,19 @@ do_configure_ocarina() {
 do_build_ocarina() {
     cd "${root_script_dir}/ocarina" || exit 1
 
+    # Skip Ocarina building if tree is clean and version is identical
+
+    HEAD="$(git log --oneline | head -1 | cut -d' ' -f1)"
+    VERSION_INSTALLED="$(ocarina -v 2>&1 | grep ^Oca | awk '{print $NF}' | sed 's,),,;s,r,,')"
+
+    git status >/dev/null
+    TREE_CLEAN=$?
+
+    if [ ${TREE_CLEAN} -eq 0 -a "${HEAD}" == "${VERSION_INSTALLED}" -a "${force_build}" == "" ] ; then
+        echo Ocarina tree is clean and already installed. Skipping Ocarina build...
+        exit 0
+    fi
+
     # Bootstrap the build
     try "./support/reconfig" "Reconfiguring (Ocarina)"
 
@@ -509,6 +523,7 @@ usage() {
     echo " --upload           : upload archives, see source code for details"
     echo " --distclean        : distclean Ocarina build directory"
     echo " --release          : release Ocarina on GitHub"
+    echo " --force            : force build"
     echo ""
     echo "Update-time options, options to be passed along with -u"
     echo " -s | --reset       : reset source directory prior to update"
@@ -558,6 +573,7 @@ while test $# -gt 0; do
       --enable-debug) ocarina_debug="--enable-debug" ;;
       --enable-gcov) ocarina_coverage="--enable-gcov" ;;
       --enable-python) ocarina_python="--enable-python --enable-shared";;
+      --force) force_build="yes";;
       --help | -h) usage 1>&2 && exit 1 ;;
       --install_crontab) do_install_crontab && exit 1 ;;
       --package | -p) package_ocarina="yes" ;;
@@ -602,6 +618,7 @@ case $scenario in
         test_ocarina="yes"
         package_ocarina="yes"
         verbose="yes"
+        force_build="yes"
         ;;
 
     nightly-build)
