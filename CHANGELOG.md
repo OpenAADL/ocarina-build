@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/OpenAADL/ocarina-build/tree/HEAD)
-
-[Full Changelog](https://github.com/OpenAADL/ocarina-build/compare/2017.1...HEAD)
+## [2017.3](https://github.com/OpenAADL/ocarina-build/tree/2017.3) (2017-03-05)
+[Full Changelog](https://github.com/OpenAADL/ocarina-build/compare/2017.1...2017.3)
 
 **Implemented enhancements:**
 
