@@ -22,6 +22,10 @@ The preferred way to install this script is simply to clone the repository:
 
  This will ensure future update of the script in a seamless way.
 
+## Demo
+
+![gif](demo.gif)
+
 ## Quick start
 
 To build a fresh copy of Ocarina and install it in `$PWD/ocarina_install`, do
