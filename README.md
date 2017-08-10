@@ -24,21 +24,24 @@ The preferred way to install this script is simply to clone the repository:
 
 ## Demo
 
+The script aims at automating everything, starting with a fresh-install
+
 ![gif](demo.gif)
 
-## Quick start
+### Details
 
-To build a fresh copy of Ocarina and install it in `$PWD/ocarina_install`, do
+The following
+ ```
+./build_ocarina.sh --scenario=fresh-install --prefix=$PWD/ocarina_install
+ ```
+
+builds a fresh copy of Ocarina and install it in `$PWD/ocarina_install`. This is equivalent to
 
  ```
 ./build_ocarina.sh --reset --update --configure --build --prefix=$PWD/ocarina_install
  ```
 
-or simply
-
- ```
-./build_ocarina.sh --scenario=fresh-install --prefix=$PWD/ocarina_install
- ```
+Multiple scenarios exist for nightly builds, travis-ci testings and others. 
 
 ## Usage
 
