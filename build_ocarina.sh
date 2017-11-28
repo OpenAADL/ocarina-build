@@ -104,6 +104,7 @@ upload_ocarina_default="no"             # "yes" to upload Ocarina archives
 build_ocarina_from_scratch_default="no" # "yes" to reload source directory
 build_ocarina_default="no"              # "yes" to build Ocarina
 configure_ocarina_default="no"          # "yes" to build Ocarina
+remove_install_prefix="no"              # "yes" to remove install prefix
 distclean_ocarina_default="no"          # "yes" to distclean Ocarina
 package_ocarina_default="no"            # "yes" to package Ocarina
 test_ocarina_default="no"               # "yes" to run make check
@@ -334,8 +335,10 @@ do_build_ocarina() {
     try "${GNU_MAKE}" "Doing '${GNU_MAKE}' (Ocarina)"
 
     # Installing
-    if test -d "${prefix}"; then
-        try "rm -rf ${prefix}" "Removing old install dir"
+    if test x"${remove_install_prefix}" = x"yes"; then
+	if test -d "${prefix}"; then
+            try "rm -rf ${prefix}" "Removing old install dir"
+	fi
     fi
 
     try "${GNU_MAKE} install" "Doing '${GNU_MAKE} install' (Ocarina)"
@@ -522,6 +525,7 @@ usage() {
     echo " -p | --package     : package ocarina distribution as tarball"
     echo " --upload           : upload archives, see source code for details"
     echo " --distclean        : distclean Ocarina build directory"
+    echo " --remove-prefix    : remove prefix prior to installation"
     echo " --release          : release Ocarina on GitHub"
     echo " --force            : force build"
     echo ""
@@ -581,6 +585,7 @@ while test $# -gt 0; do
       --purge) rm -rf "${ocarina_dist_install}" ocarina && exit 1;;
       --remote=*) repository=${optarg};;
       --release=*) (release_tag=${optarg} ; do_release) && exit 1;;
+      --remove-prefix) remove_install_prefix="yes" ;;
       --reset | -s) build_ocarina_from_scratch="yes" ;;
       --run-test | -t) test_ocarina="yes" ;;
       --scenario=*) scenario=${optarg};;
@@ -644,7 +649,8 @@ case $scenario in
         build_ocarina="yes"
         ocarina_debug="--enable-debug"
         #ocarina_python="--enable-python --enable-shared"
-        prefix="$HOME/tool-inst/ocarina"
+        prefix="$HOME/tool-inst"
+        remove_install_prefix="no"
         ;;
 
     *) echo "Invalid scenario name $scenario" && exit 1;;

@@ -64,6 +64,7 @@ Script commands
  -p | --package     : package ocarina distribution as tarball
  --upload           : upload archives, see source code for details
  --distclean        : distclean Ocarina build directory
+ --remove-prefix    : remove prefix prior to installation
  --release          : release Ocarina on GitHub
  --force            : force build
 
