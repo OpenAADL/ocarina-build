@@ -476,7 +476,7 @@ do_install_crontab() {
     command="$root_script_dir/build_ocarina.sh --selfupdate && $root_script_dir/build_ocarina.sh --scenario=nightly-build"
     job="0 0 * * 0 $command"
 
-    cat <(fgrep -i -v "$command" <(crontab -l)) <(echo "$job") | crontab -
+    cat <(grep -F -i -v "$command" <(crontab -l)) <(echo "$job") | crontab -
 }
 
 ###############################################################################
