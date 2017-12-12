@@ -140,7 +140,7 @@ spinner() {
     # PID of the previous command launched in background
 
     local delay=.75
-    local spinstr='|/-\'
+    local spinstr='|/-'\\
     while ps a | awk '{print $1}' | grep -q "$pid" ; do
         local temp=${spinstr#?}
         printf " [%c]  " "$spinstr"
