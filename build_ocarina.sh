@@ -319,7 +319,7 @@ do_build_ocarina() {
     git status >/dev/null
     TREE_CLEAN=$?
 
-    if [ ${TREE_CLEAN} -eq 0 -a "${HEAD}" == "${VERSION_INSTALLED}" -a "${force_build}" == "" ] ; then
+    if [ ${TREE_CLEAN} -eq 0 ] && [ "${HEAD}" == "${VERSION_INSTALLED}" ] && [ "${force_build}" == "" ] ; then
         echo Ocarina tree is clean and already installed. Skipping Ocarina build...
         exit 0
     fi
