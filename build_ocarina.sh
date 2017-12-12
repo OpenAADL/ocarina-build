@@ -141,7 +141,7 @@ spinner() {
 
     local delay=.75
     local spinstr='|/-\'
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+    while ps a | awk '{print $1}' | grep -q "$pid" ; do
         local temp=${spinstr#?}
         printf " [%c]  " "$spinstr"
         local spinstr=$temp${spinstr%"$temp"}
