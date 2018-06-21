@@ -44,29 +44,29 @@ GNU_MAKE=make # default make utility
 case "$(uname -s)" in
 
     Darwin)
-	build_platform=darwin-$(uname -m)
-	src_suffix=".tar.gz"
-	bin_suffix=".tgz"
-	;;
+        build_platform=darwin-$(uname -m)
+        src_suffix=".tar.gz"
+        bin_suffix=".tgz"
+        ;;
 
     Linux)
-	build_platform=linux-$(uname -m)
-	src_suffix=".tar.gz"
-	bin_suffix=".tgz"
-	;;
+        build_platform=linux-$(uname -m)
+        src_suffix=".tar.gz"
+        bin_suffix=".tgz"
+        ;;
 
     CYGWIN*)
-	# For Cygwin, we assume we "cross compile"
-	target_specific="--target=x86_64-w64-mingw32"
-	build_platform=windows-x86
-	src_suffix=".tar.gz"
-	bin_suffix=".zip"
-	;;
+        # For Cygwin, we assume we "cross compile"
+        target_specific="--target=x86_64-w64-mingw32"
+        build_platform=windows-x86
+        src_suffix=".tar.gz"
+        bin_suffix=".zip"
+        ;;
 
     MINGW32*|MSYS*)
-	echo "Unsupported build configuration"
-	exit -1
-	;;
+        echo "Unsupported build configuration"
+        exit -1
+        ;;
     esac
 
 ##################################
@@ -219,21 +219,21 @@ do_archive() {
 
     case "${format}" in
         .tar.gz | .tgz )
-	    tar czf "${archive_name}" "${directory}"
-	    ;;
+            tar czf "${archive_name}" "${directory}"
+            ;;
 
         .tar.bz2 | .tbz2 )
-	    tar cjf "${archive_name}" "${directory}"
-	    ;;
+            tar cjf "${archive_name}" "${directory}"
+            ;;
 
         .zip )
-	    zip -q -r "${archive_name}" "${directory}"
-	    ;;
+            zip -q -r "${archive_name}" "${directory}"
+            ;;
 
         * )
-	    echo "Unknown archive format: ${format}"
-	    exit 1
-	    ;;
+            echo "Unknown archive format: ${format}"
+            exit 1
+            ;;
     esac
 
     return 0
@@ -252,7 +252,7 @@ do_check_out() {
 
         rm -rf ocarina
         try "git clone ${repository}/ocarina.git" \
-	    "Checkout the Ocarina sources"
+            "Checkout the Ocarina sources"
 
         cd ocarina || exit 1
 
@@ -268,8 +268,8 @@ do_check_out() {
                 tag_option="--tag=${git_tag}"
             fi;
 
-	    try "./support/get_runtimes.sh --root_url=${repository} ${tag_option} ${include_runtimes}" \
-	        "Fetching runtimes '${include_runtimes}'"
+            try "./support/get_runtimes.sh --root_url=${repository} ${tag_option} ${include_runtimes}" \
+                "Fetching runtimes '${include_runtimes}'"
         fi;
 
     else
@@ -279,13 +279,13 @@ do_check_out() {
         # Update the requested runtimes
 
         if test ! -z "${include_runtimes}"; then
-	    cd resources/runtime || exit 1
-	    for r in ${include_runtimes}; do
-	        cd "${r}" || exit
-	        try "git pull" "Updating runtime '${r}'"
-	        cd ..
-	    done
-	    cd ../.. || exit 1
+            cd resources/runtime || exit 1
+            for r in ${include_runtimes}; do
+                cd "${r}" || exit
+                try "git pull" "Updating runtime '${r}'"
+                cd ..
+            done
+            cd ../.. || exit 1
         fi
     fi
 }
@@ -336,9 +336,9 @@ do_build_ocarina() {
 
     # Installing
     if test x"${remove_install_prefix}" = x"yes"; then
-	if test -d "${prefix}"; then
+        if test -d "${prefix}"; then
             try "rm -rf ${prefix}" "Removing old install dir"
-	fi
+        fi
     fi
 
     try "${GNU_MAKE} install" "Doing '${GNU_MAKE} install' (Ocarina)"
