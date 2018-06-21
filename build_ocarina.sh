@@ -201,7 +201,7 @@ try() {
     touch "${is_error}"
 
     # Display the report message and abort
-    cat "${try_report}"
+    tail -n 500 "${try_report}"
     exit 1
 }
 
@@ -622,7 +622,7 @@ case $scenario in
         build_ocarina="yes"
         test_ocarina="yes"
         package_ocarina="yes"
-        verbose="yes"
+        verbose="no"
         force_build="yes"
         ;;
 
