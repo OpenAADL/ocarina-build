@@ -41,7 +41,7 @@ builds a fresh copy of Ocarina and install it in `$PWD/ocarina_install`. This is
 ./build_ocarina.sh --reset --update --configure --build --prefix=$PWD/ocarina_install
  ```
 
-Multiple scenarios exist for nightly builds, travis-ci testings and others. 
+Multiple scenarios exist for nightly builds, travis-ci testings and others.
 
 ## Usage
 
@@ -88,6 +88,10 @@ Scenarios, specific combination of parameters
 
  Note: a default scenario can be passed using the OCARINA_SCENARIO
  environment variable
+
+Remote build:
+ --remote-build=login@host : do a remote build on host through ssh
+
 ```
 
 ## Authors

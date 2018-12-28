@@ -3,7 +3,7 @@
 ###############################################################################
 # MIT License
 #
-# Copyright (c) 2016-2017 OpenAADL
+# Copyright (c) 2016-2018 OpenAADL
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,7 @@ is_error=$tmp_dir/build_ocarina_ERROR; rm -f "$is_error"
 
 LANG=C        # ensure there is no pollution from language-specific locales
 GNU_MAKE=make # default make utility
+IFS=' '
 
 ######################
 # Target specific flags for configure go there
@@ -92,6 +93,8 @@ git_tag=""
 release_tag=""
 verbose=""
 force_build=""
+remote_args=""
+remote_host=""
 
 #############################
 # build_ocarina configuration
@@ -505,6 +508,24 @@ do_release() {
 }
 
 ###############################################################################
+# Do a remote execution of the build on host $remote_host
+
+do_remote() {
+
+    # We filter out the remote-build argument to avoid recursion
+    ARGS=()
+    for var in ${remote_args[@]}; do
+        [[ "$var" != *"remote-build"* ]] && ARGS+=("$var")
+    done
+
+    script_name=`basename "$0"`
+
+    echo Build on remote host $remote_host with $ARGS
+    scp "${script_name}" ${remote_host}: || exit 1
+    ssh "${remote_host}" "./${script_name} $ARGS"
+}
+
+###############################################################################
 # Print usage
 usage() {
     echo "Usage: $0 [switches]"
@@ -550,6 +571,9 @@ usage() {
     echo ""
     echo " Note: a default scenario can be passed using the OCARINA_SCENARIO"
     echo " environment variable"
+    echo ""
+    echo "Remote build:"
+    echo " --remote-build=login@host : do a remote build on host through ssh"
 }
 
 ###############################################################################
@@ -558,6 +582,9 @@ usage() {
 # 1) parse command line parameters
 
 : "${scenario:=$OCARINA_SCENARIO}"
+
+# Do a back-up of the arguments
+initial_args=$@
 
 while test $# -gt 0; do
   case "$1" in
@@ -585,6 +612,7 @@ while test $# -gt 0; do
       --purge) rm -rf "${ocarina_dist_install}" ocarina && exit 1;;
       --remote=*) repository=${optarg};;
       --release=*) (release_tag=${optarg} ; do_release) && exit 1;;
+      --remote-build=*) (remote_args=${initial_args} ; remote_host=${optarg}; do_remote) && exit 1;;
       --remove-prefix) remove_install_prefix="yes" ;;
       --reset | -s) build_ocarina_from_scratch="yes" ;;
       --run-test | -t) test_ocarina="yes" ;;
