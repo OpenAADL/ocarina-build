@@ -58,19 +58,15 @@ case "$(uname -s)" in
 
     CYGWIN*)
         # For Cygwin, we assume we "cross compile"
-        target_specific="--target=x86_64-w64-mingw32"
+#        target_specific="--target=x86_64-w64-mingw32"
         build_platform=windows-x86
         src_suffix=".tar.gz"
         bin_suffix=".zip"
         ;;
 
     MINGW32*|MSYS*)
-        target_specific="--target=x86_64-w64-mingw32"
-        build_platform=windows-x86
-        src_suffix=".tar.gz"
-        bin_suffix=".zip"
-#        echo "Unsupported build configuration"
-#        exit -1
+        echo "Unsupported build configuration"
+        exit -1
         ;;
     esac
 
