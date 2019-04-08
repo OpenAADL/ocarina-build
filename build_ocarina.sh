@@ -65,8 +65,12 @@ case "$(uname -s)" in
         ;;
 
     MINGW32*|MSYS*)
-        echo "Unsupported build configuration"
-        exit -1
+        target_specific="--target=x86_64-w64-mingw32"
+        build_platform=windows-x86
+        src_suffix=".tar.gz"
+        bin_suffix=".zip"
+#        echo "Unsupported build configuration"
+#        exit -1
         ;;
     esac
 
