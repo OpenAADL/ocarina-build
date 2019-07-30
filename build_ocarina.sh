@@ -650,7 +650,7 @@ case $scenario in
         build_ocarina="yes"
         test_ocarina="yes"
         package_ocarina="yes"
-        verbose="no"
+        verbose="yes"
         force_build="yes"
         ;;
 
