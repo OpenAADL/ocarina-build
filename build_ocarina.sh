@@ -159,7 +159,6 @@ spinner() {
 ###############################################################################
 # This function tries to do an action, if the action fails; it complains
 # by sending a report. It uses the following variables
-
 # 1 - ${tmp_dir}: which designates the temp directory.
 # 2 - ${report_mail}: which designates the e-mail adress to contact in
 #     case of failure.
@@ -528,6 +527,40 @@ do_remote() {
 }
 
 ###############################################################################
+# Install GNAT (adapted from libadalang project)
+
+do_install_gnat_ce() {
+
+    if ! [ -d $INSTALL_DIR ]
+    then
+        mkdir -p $INSTALL_DIR
+    fi
+
+    # Get and install GNAT
+    if ! [ -d gnat_community_install_script ]
+    then
+        git clone https://github.com/AdaCore/gnat_community_install_script.git
+    else
+        (cd gnat_community_install_script && git pull)
+    fi
+    if ! [ -f $INSTALL_DIR/bin/gcc ]
+    then
+        if [ $TRAVIS_OS_NAME = linux ]; then
+            GNAT_INSTALLER=$PWD/gnat-community-2019-20190517-x86_64-linux-bin
+            GNAT_INSTALLER_URL=http://mirrors.cdn.adacore.com/art/5cdffc5409dcd015aaf82626
+        else
+            GNAT_INSTALLER=$PWD/gnat-community-2019-20190517-x86_64-darwin-bin.dmg
+            GNAT_INSTALLER_URL=http://mirrors.cdn.adacore.com/art/5ce0322c31e87a8f1d4253fa
+        fi
+
+        wget -O $GNAT_INSTALLER $GNAT_INSTALLER_URL
+        sh gnat_community_install_script/install_package.sh \
+           "$GNAT_INSTALLER" "$INSTALL_DIR"
+    fi
+}
+
+
+###############################################################################
 # Print usage
 usage() {
     echo "Usage: $0 [switches]"
@@ -551,6 +584,7 @@ usage() {
     echo " --remove-prefix    : remove prefix prior to installation"
     echo " --release          : release Ocarina on GitHub"
     echo " --force            : force build"
+    echo " --install-gnat-ce  : install GNAT Community Edition in \$TOOLS_DIR"
     echo ""
     echo "Update-time options, options to be passed along with -u"
     echo " -s | --reset       : reset source directory prior to update"
@@ -609,6 +643,7 @@ while test $# -gt 0; do
       --force) force_build="yes";;
       --help | -h) usage 1>&2 && exit 1 ;;
       --install_crontab) do_install_crontab && exit 1 ;;
+      --install-gnat-ce) do_install_gnat_ce && exit 1 ;;
       --package | -p) package_ocarina="yes" ;;
       --prefix=*) prefix=${optarg};;
       --purge) rm -rf "${ocarina_dist_install}" ocarina && exit 1;;
