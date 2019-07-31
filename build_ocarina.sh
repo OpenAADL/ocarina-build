@@ -205,7 +205,6 @@ try() {
     # Display the report message and abort
     tail -n 500 "${try_report}"
 
-    cat config.log
     exit 1
 }
 
