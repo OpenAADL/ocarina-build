@@ -535,6 +535,7 @@ do_install_gnat_ce() {
     then
         mkdir -p $INSTALL_DIR
     fi
+    echo "Installing GNAT CE in $INSTALL_DIR"
 
     # Get and install GNAT
     if ! [ -d gnat_community_install_script ]
@@ -543,6 +544,7 @@ do_install_gnat_ce() {
     else
         (cd gnat_community_install_script && git pull)
     fi
+
     if ! [ -f $INSTALL_DIR/bin/gcc ]
     then
         if [ $TRAVIS_OS_NAME = linux ]; then
