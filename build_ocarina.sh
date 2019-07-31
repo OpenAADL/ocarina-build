@@ -3,7 +3,7 @@
 ###############################################################################
 # MIT License
 #
-# Copyright (c) 2016-2018 OpenAADL
+# Copyright (c) 2016-2019 OpenAADL
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -689,7 +689,7 @@ case $scenario in
         build_ocarina="yes"
         test_ocarina="yes"
         package_ocarina="yes"
-        verbose="yes"
+        verbose="no"
         force_build="yes"
         ;;
 
