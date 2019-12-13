@@ -40,6 +40,32 @@ LANG=C        # ensure there is no pollution from language-specific locales
 GNU_MAKE=make # default make utility
 IFS=' '
 
+# Determin TRAVE_OS_NAME if not set
+# From https://github.com/uclouvain/openjpeg/blob/master/tools/travis-ci/run.sh
+
+if [ "${TRAVIS_OS_NAME:-}" == "" ]; then
+  # Let's guess OS for testing purposes
+	echo "Guessing OS"
+	if uname -s | grep -i Darwin &> /dev/null; then
+		TRAVIS_OS_NAME=osx
+	elif uname -s | grep -i Linux &> /dev/null; then
+		TRAVIS_OS_NAME=linux
+		if [ "${CC:-}" == "" ]; then
+			# default to gcc
+			export CC=gcc
+		fi
+	elif uname -s | grep -i CYGWIN &> /dev/null; then
+		TRAVIS_OS_NAME=windows
+	elif uname -s | grep -i MINGW &> /dev/null; then
+		TRAVIS_OS_NAME=windows
+	elif [ "${APPVEYOR:-}" == "True" ]; then
+		TRAVIS_OS_NAME=windows
+	else
+		echo "Failed to guess OS"; exit 1
+	fi
+	echo "${TRAVIS_OS_NAME}"
+fi
+
 ######################
 # Target specific flags for configure go there
 case "$(uname -s)" in
@@ -85,6 +111,7 @@ ocarina_flags=""                      # combination of the above
 
 # Default installation prefix, can be overidden by the --prefix parameter
 prefix_default=${root_script_dir}/ocarina_repos_install
+install_dir_default=${root_script_dir}/tools
 ocarina_dist_install=${root_script_dir}/ocarina_dist_install
 
 # Defaut repository, can be overriden by the --remote parameter
@@ -529,7 +556,8 @@ do_remote() {
 # Install GNAT (adapted from libadalang project)
 
 do_install_gnat_ce() {
-
+    : ${INSTALL_DIR=$install_dir_default}
+    
     if ! [ -d $INSTALL_DIR ]
     then
         mkdir -p $INSTALL_DIR
