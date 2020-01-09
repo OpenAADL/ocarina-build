@@ -3,7 +3,7 @@
 ###############################################################################
 # MIT License
 #
-# Copyright (c) 2016-2019 OpenAADL
+# Copyright (c) 2016-2020 OpenAADL
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -576,10 +576,10 @@ do_install_gnat_ce() {
     then
         if [ $TRAVIS_OS_NAME = linux ]; then
             GNAT_INSTALLER=$PWD/gnat-community-2019-20190517-x86_64-linux-bin
-            GNAT_INSTALLER_URL=http://mirrors.cdn.adacore.com/art/5cdffc5409dcd015aaf82626
+            GNAT_INSTALLER_URL="https://community.download.adacore.com/v1/0cd3e2a668332613b522d9612ffa27ef3eb0815b?filename=gnat-community-2019-20190517-x86_64-linux-bin"
         else
             GNAT_INSTALLER=$PWD/gnat-community-2019-20190517-x86_64-darwin-bin.dmg
-            GNAT_INSTALLER_URL=http://mirrors.cdn.adacore.com/art/5ce0322c31e87a8f1d4253fa
+            GNAT_INSTALLER_URL="https://community.download.adacore.com/v1/5a7801fc686e86de838cfaf7071170152d81254d?filename=gnat-community-2019-20190517-x86_64-darwin-bin.dmg"
         fi
 
         wget -O $GNAT_INSTALLER $GNAT_INSTALLER_URL
