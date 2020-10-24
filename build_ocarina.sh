@@ -92,8 +92,9 @@ case "$(uname -s)" in
         ;;
 
     MINGW32*|MSYS*)
-        echo "Unsupported build configuration"
-        exit -1
+        build_platform=windpws-$(uname -m)
+        src_suffix=".zip"
+        bin_suffix=".zip"
         ;;
     esac
 
