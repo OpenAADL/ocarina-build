@@ -61,7 +61,8 @@ if [ "${TRAVIS_OS_NAME:-}" == "" ]; then
         elif [ "${APPVEYOR:-}" == "True" ]; then
                 TRAVIS_OS_NAME=windows
         else
-                echo "Failed to guess OS"; exit 1
+            echo "Failed to guess OS";
+            echo $(uname -a)
         fi
         echo "${TRAVIS_OS_NAME}"
 fi
