@@ -45,25 +45,25 @@ IFS=' '
 
 if [ "${TRAVIS_OS_NAME:-}" == "" ]; then
   # Let's guess OS for testing purposes
-	echo "Guessing OS"
-	if uname -s | grep -i Darwin &> /dev/null; then
-		TRAVIS_OS_NAME=osx
-	elif uname -s | grep -i Linux &> /dev/null; then
-		TRAVIS_OS_NAME=linux
-		if [ "${CC:-}" == "" ]; then
-			# default to gcc
-			export CC=gcc
-		fi
-	elif uname -s | grep -i CYGWIN &> /dev/null; then
-		TRAVIS_OS_NAME=windows
-	elif uname -s | grep -i MINGW &> /dev/null; then
-		TRAVIS_OS_NAME=windows
-	elif [ "${APPVEYOR:-}" == "True" ]; then
-		TRAVIS_OS_NAME=windows
-	else
-		echo "Failed to guess OS"; exit 1
-	fi
-	echo "${TRAVIS_OS_NAME}"
+        echo "Guessing OS"
+        if uname -s | grep -i Darwin &> /dev/null; then
+                TRAVIS_OS_NAME=osx
+        elif uname -s | grep -i Linux &> /dev/null; then
+                TRAVIS_OS_NAME=linux
+                if [ "${CC:-}" == "" ]; then
+                        # default to gcc
+                        export CC=gcc
+                fi
+        elif uname -s | grep -i CYGWIN &> /dev/null; then
+                TRAVIS_OS_NAME=windows
+        elif uname -s | grep -i MINGW &> /dev/null; then
+                TRAVIS_OS_NAME=windows
+        elif [ "${APPVEYOR:-}" == "True" ]; then
+                TRAVIS_OS_NAME=windows
+        else
+                echo "Failed to guess OS"; exit 1
+        fi
+        echo "${TRAVIS_OS_NAME}"
 fi
 
 ######################
@@ -482,6 +482,9 @@ do_build_from_tarball() {
 
     archive="$(ls ocarina-*${bin_suffix})"
     echo "  => Archive ${archive} built in directory $(pwd)"
+
+    echo "$(pwd)"
+    echo "$(ls -al)"
 }
 
 ###############################################################################
@@ -557,7 +560,7 @@ do_remote() {
 
 do_install_gnat_ce() {
     : ${INSTALL_DIR=$install_dir_default}
-    
+
     if ! [ -d $INSTALL_DIR ]
     then
         mkdir -p $INSTALL_DIR
