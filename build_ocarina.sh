@@ -93,7 +93,7 @@ case "$(uname -s)" in
 
     MINGW32*|MSYS*)
         build_platform=windows-$(uname -m)
-        src_suffix=".zip"
+        src_suffix=".tar.gz"
         bin_suffix=".zip"
         ;;
     esac
