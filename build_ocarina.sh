@@ -418,9 +418,6 @@ do_packaging() {
     try "${GNU_MAKE} dist DISTCHECK_CONFIGURE_FLAGS='--disable-debug'" \
         "${GNU_MAKE} dist (Ocarina)"
 
-    echo "$(pwd)"
-    echo "$(ls -al)"
-
     archive="$(ls ocarina-*${src_suffix})"
     echo "  => Archive ${archive} built in directory $(pwd)"
 
@@ -491,8 +488,6 @@ do_build_from_tarball() {
     archive="$(ls ocarina-*${bin_suffix})"
     echo "  => Archive ${archive} built in directory $(pwd)"
 
-    echo "$(pwd)"
-    echo "$(ls -al)"
 }
 
 ###############################################################################
