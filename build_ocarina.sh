@@ -92,7 +92,7 @@ case "$(uname -s)" in
         ;;
 
     MINGW32*|MSYS*)
-        build_platform=windpws-$(uname -m)
+        build_platform=windows-$(uname -m)
         src_suffix=".zip"
         bin_suffix=".zip"
         ;;
@@ -248,6 +248,8 @@ do_archive() {
     archive_name=$1
     format=$2
     directory=$3
+
+    echo "Preparing archive: format ${format}"
 
     case "${format}" in
         .tar.gz | .tgz )
@@ -415,6 +417,9 @@ do_packaging() {
 
     try "${GNU_MAKE} dist DISTCHECK_CONFIGURE_FLAGS='--disable-debug'" \
         "${GNU_MAKE} dist (Ocarina)"
+
+    echo "$(pwd)"
+    echo "$(ls -al)"
 
     archive="$(ls ocarina-*${src_suffix})"
     echo "  => Archive ${archive} built in directory $(pwd)"
