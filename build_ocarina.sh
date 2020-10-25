@@ -259,7 +259,8 @@ do_archive() {
             ;;
 
         .zip )
-            zip -q -r "${archive_name}" "${directory}"
+            echo $(which zip)
+            zip -q -r "${archive_name}" "${directory}" || exit 1
             ;;
 
         * )
