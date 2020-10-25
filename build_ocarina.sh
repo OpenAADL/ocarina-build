@@ -735,7 +735,7 @@ case $scenario in
         build_ocarina_from_scratch="yes"
         update_ocarina="yes"
         build_ocarina="yes"
-        #test_ocarina="yes"
+        test_ocarina="yes"
         package_ocarina="yes"
         verbose="no"
         force_build="yes"
