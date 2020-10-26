@@ -40,31 +40,31 @@ LANG=C        # ensure there is no pollution from language-specific locales
 GNU_MAKE=make # default make utility
 IFS=' '
 
-# Determin TRAVE_OS_NAME if not set
+# Determine TRAVE_OS_NAME if not set
 # From https://github.com/uclouvain/openjpeg/blob/master/tools/travis-ci/run.sh
 
-if [ "${TRAVIS_OS_NAME:-}" == "" ]; then
+if [ "${BUILDER_OS_NAME:-}" == "" ]; then
   # Let's guess OS for testing purposes
         echo "Guessing OS"
         if uname -s | grep -i Darwin &> /dev/null; then
-                TRAVIS_OS_NAME=osx
+                BUILDER_OS_NAME=osx
         elif uname -s | grep -i Linux &> /dev/null; then
-                TRAVIS_OS_NAME=linux
+                BUILDER_OS_NAME=linux
                 if [ "${CC:-}" == "" ]; then
                         # default to gcc
                         export CC=gcc
                 fi
         elif uname -s | grep -i CYGWIN &> /dev/null; then
-                TRAVIS_OS_NAME=windows
+                BUILDER_OS_NAME=windows
         elif uname -s | grep -i MINGW &> /dev/null; then
-                TRAVIS_OS_NAME=windows
+                BUILDER_OS_NAME=windows
         elif [ "${APPVEYOR:-}" == "True" ]; then
-                TRAVIS_OS_NAME=windows
+                BUILDER_OS_NAME=windows
         else
             echo "Failed to guess OS";
             echo $(uname -a)
         fi
-        echo "${TRAVIS_OS_NAME}"
+        echo "${BUILDER_OS_NAME}"
 fi
 
 ######################
@@ -580,7 +580,7 @@ do_install_gnat_ce() {
 
     if ! [ -f $INSTALL_DIR/bin/gcc ]
     then
-        if [ $TRAVIS_OS_NAME = linux ]; then
+        if [ $BUILDER_OS_NAME = linux ]; then
             GNAT_INSTALLER=$PWD/gnat-community-2019-20190517-x86_64-linux-bin
             GNAT_INSTALLER_URL="https://community.download.adacore.com/v1/0cd3e2a668332613b522d9612ffa27ef3eb0815b?filename=gnat-community-2019-20190517-x86_64-linux-bin"
         else
@@ -593,7 +593,6 @@ do_install_gnat_ce() {
            "$GNAT_INSTALLER" "$INSTALL_DIR"
     fi
 }
-
 
 ###############################################################################
 # Print usage
@@ -712,8 +711,8 @@ case $scenario in
         ;;
 
     travis-ci)
-        # For travis-ci, we
-        # 1) build Ocarina with coverage activated
+        # For travis-ci, we build Ocarina with coverage activated, run
+        # all tests and package the binary.
         ocarina_debug="--enable-debug"
         ocarina_coverage="--enable-gcov"
         build_info="yes"
@@ -727,8 +726,8 @@ case $scenario in
         ;;
 
     github)
-        # For travis-ci, we
-        # 1) build Ocarina with coverage activated
+        # For GitHub, we build Ocarina, run all tests and package the
+        # binary.
         ocarina_debug="--enable-debug"
         #ocarina_coverage="--enable-gcov"
         build_info="yes"
@@ -742,15 +741,14 @@ case $scenario in
         ;;
 
     appveyor)
-        # For appveyor, we
-        # 1) build Ocarina with coverage activated
+        # For appveyor, we build Ocarina
         ocarina_debug="--enable-debug"
-        ocarina_coverage="--enable-gcov"
+        #ocarina_coverage="--enable-gcov"
         build_info="yes"
         build_ocarina_from_scratch="yes"
         update_ocarina="yes"
         build_ocarina="yes"
-        # Tests are disabled due to some limits
+        # Tests are disabled due to time limits
 #        test_ocarina="yes"
         package_ocarina="yes"
         verbose="no"
