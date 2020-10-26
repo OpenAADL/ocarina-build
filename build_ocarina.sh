@@ -40,7 +40,7 @@ LANG=C        # ensure there is no pollution from language-specific locales
 GNU_MAKE=make # default make utility
 IFS=' '
 
-# Determine TRAVE_OS_NAME if not set
+# Determine BUILDER_OS_NAME if not set
 # From https://github.com/uclouvain/openjpeg/blob/master/tools/travis-ci/run.sh
 
 if [ "${BUILDER_OS_NAME:-}" == "" ]; then
@@ -636,7 +636,7 @@ usage() {
     echo "Scenarios, specific combination of parameters"
     echo " --scenario=<name>  : run a specific scenario"
     echo ""
-    echo " Valid names are coverage fresh-install nightly-build taste travis-ci appveyor"
+    echo " Valid names are coverage fresh-install nightly-build taste github"
     echo " See source code for details on actual parameters"
     echo ""
     echo " Note: a default scenario can be passed using the OCARINA_SCENARIO"
@@ -710,21 +710,6 @@ case $scenario in
         build_ocarina="yes"
         ;;
 
-    travis-ci)
-        # For travis-ci, we build Ocarina with coverage activated, run
-        # all tests and package the binary.
-        ocarina_debug="--enable-debug"
-        ocarina_coverage="--enable-gcov"
-        build_info="yes"
-        build_ocarina_from_scratch="yes"
-        update_ocarina="yes"
-        build_ocarina="yes"
-        test_ocarina="yes"
-        package_ocarina="yes"
-        verbose="no"
-        force_build="yes"
-        ;;
-
     github)
         # For GitHub, we build Ocarina, run all tests and package the
         # binary.
@@ -735,21 +720,6 @@ case $scenario in
         update_ocarina="yes"
         build_ocarina="yes"
         test_ocarina="yes"
-        package_ocarina="yes"
-        verbose="no"
-        force_build="yes"
-        ;;
-
-    appveyor)
-        # For appveyor, we build Ocarina
-        ocarina_debug="--enable-debug"
-        #ocarina_coverage="--enable-gcov"
-        build_info="yes"
-        build_ocarina_from_scratch="yes"
-        update_ocarina="yes"
-        build_ocarina="yes"
-        # Tests are disabled due to time limits
-#        test_ocarina="yes"
         package_ocarina="yes"
         verbose="no"
         force_build="yes"
