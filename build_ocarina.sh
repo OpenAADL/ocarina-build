@@ -714,7 +714,7 @@ case $scenario in
         # For GitHub, we build Ocarina, run all tests and package the
         # binary.
         ocarina_debug="--enable-debug"
-        #ocarina_coverage="--enable-gcov"
+        ocarina_coverage="--enable-gcov"
         build_info="yes"
         build_ocarina_from_scratch="yes"
         update_ocarina="yes"
