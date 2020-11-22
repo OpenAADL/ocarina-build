@@ -45,7 +45,6 @@ IFS=' '
 
 if [ "${BUILDER_OS_NAME:-}" == "" ]; then
   # Let's guess OS for testing purposes
-        echo "Guessing OS"
         if uname -s | grep -i Darwin &> /dev/null; then
                 BUILDER_OS_NAME=osx
         elif uname -s | grep -i Linux &> /dev/null; then
@@ -64,7 +63,6 @@ if [ "${BUILDER_OS_NAME:-}" == "" ]; then
             echo "Failed to guess OS";
             uname -a
         fi
-        echo "${BUILDER_OS_NAME}"
 fi
 
 ######################
@@ -430,7 +428,7 @@ do_packaging() {
 }
 
 ###############################################################################
-# Build the binary package for the Ocarina suite
+# Update current script to latest GitHub master
 
 do_self_update() {
      try "git pull origin master" "Self updating"
@@ -670,7 +668,7 @@ while test $# -gt 0; do
       --tag=*) git_tag=${optarg} ;;
       --update | -u) update_ocarina="yes" ;;
       --upload) upload_ocarina="yes";;
-      --version) git log -1 --pretty=format:%h  && exit 1 ;;
+      --version) echo "$0 version: " $(git log -1 --pretty=format:%h)  && exit 1 ;;
       --verbose) verbose="yes";;
       *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
   esac
