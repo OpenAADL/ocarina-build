@@ -725,6 +725,22 @@ case $scenario in
         force_build="yes"
         ;;
 
+    github-python)
+        # For GitHub, we build Ocarina, run all tests and package the
+        # binary.
+        ocarina_debug="--enable-debug"
+        ocarina_coverage="--enable-gcov"
+        build_info="yes"
+        build_ocarina_from_scratch="yes"
+        update_ocarina="yes"
+        build_ocarina="yes"
+        test_ocarina="yes"
+        package_ocarina="yes"
+        verbose="no"
+        force_build="yes"
+        ocarina_python="--enable-python --enable-shared"
+        ;;
+
     nightly-build)
         build_info="yes"
         update_ocarina="yes"
@@ -747,7 +763,7 @@ case $scenario in
         update_ocarina="yes"
         build_ocarina="yes"
         ocarina_debug="--enable-debug"
-        #ocarina_python="--enable-python --enable-shared"
+        ocarina_python="--enable-python --enable-shared"
         prefix="$HOME/tool-inst"
         remove_install_prefix="no"
         ;;
