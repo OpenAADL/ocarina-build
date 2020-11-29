@@ -741,7 +741,7 @@ case $scenario in
         update_ocarina="yes"
         build_ocarina="yes"
         ocarina_debug="--enable-debug"
-        ocarina_python="--enable-python --enable-shared"
+        #ocarina_python="--enable-python --enable-shared"
         prefix="$HOME/tool-inst"
         remove_install_prefix="no"
         ;;
@@ -766,7 +766,7 @@ ocarina_flags="${ocarina_doc} ${ocarina_debug} ${ocarina_coverage} ${ocarina_pyt
 : ${package_ocarina=$package_ocarina_default}
 : ${test_ocarina=$test_ocarina_default}
 : "${prefix="$prefix_default"}"
-: ${repository=$repository_default}
+: "${repository="$repository_default"}"
 
 if test x"${debug}" = x"yes"; then
     echo build_ocarina_from_scratch : "$build_ocarina_from_scratch"
