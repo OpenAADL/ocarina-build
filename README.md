@@ -13,6 +13,8 @@ on shell constructs to coordinate various activities:
 - package Ocarina and its runtime
 - upload archives
 
+![Shellcheck](https://github.com/OpenAADL/ocarina-build/workflows/Shellcheck/badge.svg)
+
 ## Installation
 
 The preferred way to install this script is simply to clone the repository:
@@ -88,9 +90,6 @@ Scenarios, specific combination of parameters
 
  Note: a default scenario can be passed using the OCARINA_SCENARIO
  environment variable
-
-Remote build:
- --remote-build=login@host : do a remote build on host through ssh
 
 ```
 
