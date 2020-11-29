@@ -36,8 +36,8 @@ the_date=$(date +"%Y%m%d")
 tmp_dir="$HOME/tmp"; mkdir -p "$tmp_dir"
 is_error=$tmp_dir/build_ocarina_ERROR; rm -f "$is_error"
 
-LANG=C        # ensure there is no pollution from language-specific locales
-GNU_MAKE=make # default make utility
+LANG=C          # ensure there is no pollution from language-specific locales
+GNU_MAKE="make" # default make utility
 IFS=' '
 
 # Determine BUILDER_OS_NAME if not set
@@ -62,13 +62,16 @@ if [ "${BUILDER_OS_NAME:-}" == "" ]; then
                 BUILDER_OS_NAME=windows
         else
             echo "Failed to guess OS";
-            echo $(uname -a)
+            uname -a
         fi
         echo "${BUILDER_OS_NAME}"
 fi
 
 ######################
 # Target specific flags for configure go there
+
+target_specific=
+
 case "$(uname -s)" in
 
     Darwin)
@@ -122,8 +125,6 @@ git_tag=""
 release_tag=""
 verbose=""
 force_build=""
-remote_args=""
-remote_host=""
 
 #############################
 # build_ocarina configuration
@@ -148,17 +149,17 @@ test_ocarina_default="no"               # "yes" to run make check
 log_msg() {
     MSG="$1"
     STATUS="[PASSED]"
-    let COL=$(tput cols)-8-${#MSG}-${#STATUS}
+    (( COL=$(tput cols)-8-${#MSG}-${#STATUS} ))
 
-    printf "%s\e[1;32m%${COL}s\e[0m\n" "" "${STATUS}"
+    printf "%s\\e[1;32m%${COL}s\\e[0m\\n" "" "${STATUS}"
 }
 
 error_msg() {
     MSG="$1"
     STATUS="[FAILED]"
-    let COL=$(tput cols)-8-${#MSG}-${#STATUS}
+    (( COL=$(tput cols)-8-${#MSG}-${#STATUS} ))
 
-    printf "%s\e[1;33m%${COL}s\e[0m\n" "${MSG}" "${STATUS}"
+    printf "%s\\e[1;33m%${COL}s\\e[0m\\n" "${MSG}" "${STATUS}"
 }
 
 ###############################################################################
@@ -178,9 +179,9 @@ spinner() {
         printf " [%c]  " "$spinstr"
         local spinstr=$temp${spinstr%"$temp"}
         sleep $delay
-        printf "\b\b\b\b\b\b"
+        printf "\\b\\b\\b\\b\\b\\b"
     done
-    printf "    \b\b\b\b"
+    printf "    \\b\\b\\b\\b"
     wait $pid
     return $?
 }
@@ -261,7 +262,6 @@ do_archive() {
             ;;
 
         .zip )
-            echo $(which zip)
             zip -q -r "${archive_name}" "${directory}" || exit 1
             ;;
 
@@ -540,33 +540,17 @@ do_release() {
     git push origin master
 }
 
-###############################################################################
-# Do a remote execution of the build on host $remote_host
-
-do_remote() {
-
-    # We filter out the remote-build argument to avoid recursion
-    ARGS=()
-    for var in ${remote_args[@]}; do
-        [[ "$var" != *"remote-build"* ]] && ARGS+=("$var")
-    done
-
-    script_name=`basename "$0"`
-
-    echo Build on remote host $remote_host with $ARGS
-    scp "${script_name}" ${remote_host}: || exit 1
-    ssh "${remote_host}" "./${script_name} $ARGS"
-}
 
 ###############################################################################
 # Install GNAT (adapted from libadalang project)
 
 do_install_gnat_ce() {
-    : ${INSTALL_DIR=$install_dir_default}
 
-    if ! [ -d $INSTALL_DIR ]
+    : "${INSTALL_DIR="$install_dir_default"}"
+
+    if ! [ -d "$INSTALL_DIR" ]
     then
-        mkdir -p $INSTALL_DIR
+        mkdir -p "$INSTALL_DIR"
     fi
     echo "Installing GNAT CE in $INSTALL_DIR"
 
@@ -578,7 +562,7 @@ do_install_gnat_ce() {
         (cd gnat_community_install_script && git pull)
     fi
 
-    if ! [ -f $INSTALL_DIR/bin/gcc ]
+    if ! [ -f "$INSTALL_DIR"/bin/gcc ]
     then
         if [ $BUILDER_OS_NAME = linux ]; then
             GNAT_INSTALLER=$PWD/gnat-community-2019-20190517-x86_64-linux-bin
@@ -588,7 +572,7 @@ do_install_gnat_ce() {
             GNAT_INSTALLER_URL="https://community.download.adacore.com/v1/5a7801fc686e86de838cfaf7071170152d81254d?filename=gnat-community-2019-20190517-x86_64-darwin-bin.dmg"
         fi
 
-        wget -O $GNAT_INSTALLER $GNAT_INSTALLER_URL
+        wget -O "$GNAT_INSTALLER" "$GNAT_INSTALLER_URL"
         sh gnat_community_install_script/install_package.sh \
            "$GNAT_INSTALLER" "$INSTALL_DIR"
     fi
@@ -642,8 +626,6 @@ usage() {
     echo " Note: a default scenario can be passed using the OCARINA_SCENARIO"
     echo " environment variable"
     echo ""
-    echo "Remote build:"
-    echo " --remote-build=login@host : do a remote build on host through ssh"
 }
 
 ###############################################################################
@@ -652,9 +634,6 @@ usage() {
 # 1) parse command line parameters
 
 : "${scenario:=$OCARINA_SCENARIO}"
-
-# Do a back-up of the arguments
-initial_args=$@
 
 while test $# -gt 0; do
   case "$1" in
@@ -683,7 +662,6 @@ while test $# -gt 0; do
       --purge) rm -rf "${ocarina_dist_install}" ocarina && exit 1;;
       --remote=*) repository=${optarg};;
       --release=*) (release_tag=${optarg} ; do_release) && exit 1;;
-      --remote-build=*) (remote_args=${initial_args} ; remote_host=${optarg}; do_remote) && exit 1;;
       --remove-prefix) remove_install_prefix="yes" ;;
       --reset | -s) build_ocarina_from_scratch="yes" ;;
       --run-test | -t) test_ocarina="yes" ;;
@@ -821,8 +799,6 @@ if test x"${build_info}" = x"yes"; then
     echo "Compiler: " "$(gnatmake --version | head -n 1)"
     echo "autoconf: " "$(autoconf --version | head -n 1)"
     echo "automake: " "$(automake --version | head -n 1)"
-    echo "sed:      " "$(which sed)"
-
 fi
 
 if test x"${self_update}" = x"yes"; then
