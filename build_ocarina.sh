@@ -118,7 +118,7 @@ install_dir_default=${root_script_dir}/tools
 ocarina_dist_install=${root_script_dir}/ocarina_dist_install
 
 # Defaut repository, can be overriden by the --remote parameter
-repository_default="https://github.com/OpenAADL"
+repository_default="https://github.com/OpenAADL/ocarina.git"
 git_tag=""
 release_tag=""
 verbose=""
@@ -284,7 +284,7 @@ do_check_out() {
         # Fetch Ocarina sources
 
         rm -rf ocarina
-        try "git clone ${repository}/ocarina.git" \
+        try "git clone ${repository}/" \
             "Checkout the Ocarina sources"
 
         cd ocarina || exit 1
@@ -301,7 +301,7 @@ do_check_out() {
                 tag_option="--tag=${git_tag}"
             fi;
 
-            try "./support/get_runtimes.sh --root_url=${repository} ${tag_option} ${include_runtimes}" \
+            try "./support/get_runtimes.sh --root_url=$(dirname ${repository}) ${tag_option} ${include_runtimes}" \
                 "Fetching runtimes '${include_runtimes}'"
         fi;
 
