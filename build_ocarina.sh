@@ -301,7 +301,12 @@ do_check_out() {
                 tag_option="--tag=${git_tag}"
             fi;
 
-            try "./support/get_runtimes.sh --root_url=$(dirname ${repository}) ${tag_option} ${include_runtimes}" \
+            # ${repository} points to the Ocarina repository, it is
+            # assumed the runtimes are relative to this path.
+            # Remove 'ocarina.git' from the repository URL
+            root_url="$(dirname ${repository})"
+
+            try "./support/get_runtimes.sh --root_url=${root_url} ${tag_option} ${include_runtimes}" \
                 "Fetching runtimes '${include_runtimes}'"
         fi;
 
@@ -668,7 +673,7 @@ while test $# -gt 0; do
       --tag=*) git_tag=${optarg} ;;
       --update | -u) update_ocarina="yes" ;;
       --upload) upload_ocarina="yes";;
-      --version) echo "$0 version: " $(git log -1 --pretty=format:%h)  && exit 1 ;;
+      --version) echo "$0 version: " "$(git log -1 --pretty=format:%h)"  && exit 1 ;;
       --verbose) verbose="yes";;
       *) echo "$1: invalid flag" && echo "" && usage 1>&2 && exit 1 ;;
   esac
