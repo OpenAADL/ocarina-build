@@ -304,7 +304,7 @@ do_check_out() {
             # ${repository} points to the Ocarina repository, it is
             # assumed the runtimes are relative to this path.
             # Remove 'ocarina.git' from the repository URL
-            root_url="$(dirname ${repository})"
+            root_url="$(dirname "${repository}")"
 
             try "./support/get_runtimes.sh --root_url=${root_url} ${tag_option} ${include_runtimes}" \
                 "Fetching runtimes '${include_runtimes}'"
